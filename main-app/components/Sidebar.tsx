@@ -1,22 +1,15 @@
 'use client'
 
-import { useState } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { cn } from '@/lib/utils'
 import { 
   Shield, 
   Send, 
-  Inbox, 
-  ChevronLeft, 
-  ChevronRight, 
   LayoutDashboard,
   Key,
-  HelpCircle,
-  ExternalLink,
-  Menu
+  ExternalLink
 } from 'lucide-react'
-import { Button } from '@/components/ui/button'
 
 const menuItems = [
   { name: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
@@ -24,8 +17,11 @@ const menuItems = [
   { name: 'Private Send', href: '/pay', icon: Send },
 ]
 
-export function Sidebar() {
-  const [collapsed, setCollapsed] = useState(false)
+interface SidebarProps {
+  collapsed: boolean;
+}
+
+export function Sidebar({ collapsed }: SidebarProps) {
   const pathname = usePathname()
 
   return (
@@ -35,8 +31,8 @@ export function Sidebar() {
         collapsed ? "w-[72px]" : "w-64"
       )}
     >
-      {/* Branding & Collapse Toggle */}
-      <div className="h-20 flex items-center justify-between px-6 mb-4">
+      {/* Branding Section - Simplified */}
+      <div className="h-20 flex items-center px-6 mb-4">
         <div className="flex items-center gap-3 overflow-hidden">
           <div className="w-8 h-8 rounded-md bg-foreground flex items-center justify-center text-background shrink-0 shadow-sm">
             <Shield className="w-4 h-4" />
@@ -45,20 +41,6 @@ export function Sidebar() {
             <span className="font-black tracking-tighter text-xl uppercase">Zyn</span>
           )}
         </div>
-        
-        <button 
-          onClick={() => setCollapsed(!collapsed)}
-          className={cn(
-            "p-1.5 rounded-md text-muted-foreground/40 hover:text-foreground hover:bg-muted transition-all",
-            collapsed && "absolute left-1/2 -translate-x-1/2 top-20"
-          )}
-        >
-          {collapsed ? (
-            <Menu className="w-4 h-4" />
-          ) : (
-            <ChevronLeft className="w-4 h-4" />
-          )}
-        </button>
       </div>
 
       {/* Navigation */}
