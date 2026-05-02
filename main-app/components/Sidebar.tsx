@@ -31,9 +31,12 @@ export function Sidebar({ collapsed }: SidebarProps) {
         collapsed ? "w-[72px]" : "w-64"
       )}
     >
-      {/* Branding Section - Fix centering and breaking */}
-      <div className="h-20 flex items-center px-6 shrink-0 overflow-hidden">
-        <div className={cn("flex items-center gap-3", collapsed && "mx-auto")}>
+      {/* Branding Section - Absolute Centering for Collapsed View */}
+      <div className={cn(
+        "h-20 flex items-center shrink-0 overflow-hidden transition-all duration-300",
+        collapsed ? "justify-center px-0" : "px-6"
+      )}>
+        <div className="flex items-center gap-3">
           <div className="w-8 h-8 rounded-md bg-foreground flex items-center justify-center text-background shrink-0 shadow-sm">
             <Shield className="w-4 h-4" />
           </div>
