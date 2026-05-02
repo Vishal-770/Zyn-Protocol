@@ -48,17 +48,27 @@ export default function Home() {
             <p className="text-foreground text-lg mb-8 opacity-80">
               Your name <span className="font-black text-success">@{registeredName}.zyn.eth</span> is ready.
             </p>
-            <div className="flex flex-col gap-3">
-              <Button size="lg" className="font-bold rounded-xl h-12 px-8 w-full" asChild>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <Button size="lg" className="font-bold rounded-xl h-12 px-8" asChild>
                 <Link href="/dashboard">Open Dashboard <ArrowRight className="ml-2 w-4 h-4" /></Link>
               </Button>
-              <Button variant="ghost" size="sm" onClick={() => setRegisteredName(null)}>
-                Register another name
+              <Button variant="outline" size="lg" className="font-bold rounded-xl h-12 px-8" asChild>
+                <Link href="/pay">Pay Someone Else</Link>
               </Button>
             </div>
+            <Button variant="ghost" size="sm" className="mt-4" onClick={() => setRegisteredName(null)}>
+              Register another name
+            </Button>
           </div>
         ) : (
-          <RegisterForm onSuccess={(name) => setRegisteredName(name)} />
+          <div className="space-y-6">
+            <RegisterForm onSuccess={(name) => setRegisteredName(name)} />
+            <div className="text-center">
+              <p className="text-sm text-muted-foreground">
+                Already registered? Check your <Link href="/dashboard" className="text-primary hover:underline font-semibold">Dashboard</Link> or <Link href="/pay" className="text-primary hover:underline font-semibold">Pay someone</Link>.
+              </p>
+            </div>
+          </div>
         )}
       </div>
 
