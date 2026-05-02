@@ -6,14 +6,14 @@ import { parseEther, bytesToHex } from 'viem'
 import { resolveToStealthData } from '@/lib/ens'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card'
 import { Label } from '@/components/ui/label'
-import { Loader2, Search, ArrowRight, RefreshCw, CheckCircle2, Copy } from 'lucide-react'
+import { Loader2, Search, ArrowRight, RefreshCw, CheckCircle2, Copy, Shield, ExternalLink, Zap } from 'lucide-react'
+import { toast } from 'sonner'
 
 export function SendForm() {
   const [name, setName] = useState('')
   const [isResolving, setIsResolving] = useState(false)
-  const [resolveError, setResolveError] = useState('')
   
   const [stealthAddress, setStealthAddress] = useState<string | null>(null)
   const [ephemeralPubKey, setEphemeralPubKey] = useState<string | null>(null)
@@ -28,7 +28,6 @@ export function SendForm() {
   const handleResolve = async () => {
     if (!name) return
     setIsResolving(true)
-    setResolveError('')
     setStealthAddress(null)
     setEphemeralPubKey(null)
     setViewTag(null)
@@ -37,14 +36,15 @@ export function SendForm() {
     try {
       const result = await resolveToStealthData(name)
       if (!result) {
-        setResolveError('Name not found or not registered')
+        toast.error('ENS name not found or no stealth record set.')
       } else {
         setStealthAddress(result.address)
         setEphemeralPubKey(bytesToHex(result.ephemeralPubKey))
         setViewTag(result.viewTag)
+        toast.success(`Resolved ${name}`)
       }
     } catch (e: any) {
-      setResolveError('Failed to resolve name')
+      toast.error('Failed to resolve ENS name.')
     } finally {
       setIsResolving(false)
     }
@@ -55,14 +55,11 @@ export function SendForm() {
     
     try {
       setStep('Sending ETH...')
-      // 1. Send ETH to the stealth address
       await sendTransactionAsync({
         to: stealthAddress as `0x${string}`,
         value: parseEther(amount),
       })
 
-      // 2. Announce via Relayer (Privacy Fix)
-      // No user signature needed anymore - minimalist approach
       setStep('Announcing...')
       const schemeId = BigInt(0)
 
@@ -81,9 +78,10 @@ export function SendForm() {
       if (data.error) throw new Error(data.error)
 
       setStep('Done')
+      toast.success('Payment sent and announced!')
     } catch (e: any) {
       console.error(e)
-      setResolveError(e.shortMessage || e.message || 'Transaction failed')
+      toast.error(e.shortMessage || e.message || 'Transaction failed')
       setStep('')
     }
   }
@@ -92,72 +90,91 @@ export function SendForm() {
     if (stealthAddress) {
       navigator.clipboard.writeText(stealthAddress)
       setIsCopied(true)
+      toast.success('Address copied to clipboard')
       setTimeout(() => setIsCopied(false), 2000)
     }
   }
 
   return (
-    <Card className="w-full max-w-md mx-auto shadow-2xl bg-card/50 backdrop-blur-xl border-white/10">
+    <Card className="w-full max-w-md mx-auto shadow-xl border-border bg-card/50 backdrop-blur-sm overflow-hidden">
+      <div className="h-1 bg-gradient-to-r from-primary/50 via-primary to-primary/50" />
       <CardHeader>
-        <CardTitle className="text-2xl font-bold tracking-tight">Pay privately</CardTitle>
-        <CardDescription>Send ETH to an untraceable one-time address.</CardDescription>
+        <CardTitle className="text-2xl font-bold tracking-tight">Send privately</CardTitle>
+        <CardDescription>Resolve an ENS name and pay to a unique stealth address.</CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">
         
         <div className="space-y-2">
-          <Label htmlFor="pay-name">ENS Name</Label>
+          <Label htmlFor="pay-name" className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Recipient ENS</Label>
           <div className="flex gap-2">
             <Input
               id="pay-name"
               placeholder="alice.zyn.eth"
               value={name}
               onChange={(e) => setName(e.target.value.toLowerCase())}
+              className="h-12 bg-background/50"
               disabled={isResolving || step !== ''}
+              onKeyDown={(e) => e.key === 'Enter' && handleResolve()}
             />
-            <Button onClick={handleResolve} disabled={!name || isResolving || step !== ''}>
+            <Button 
+              size="icon" 
+              className="h-12 w-12 shrink-0"
+              onClick={handleResolve} 
+              disabled={!name || isResolving || step !== ''}
+            >
               {isResolving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Search className="w-4 h-4" />}
             </Button>
           </div>
-          {resolveError && <p className="text-sm text-destructive mt-1">{resolveError}</p>}
         </div>
 
         {stealthAddress && (
-          <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
-            <div className="p-4 rounded-lg bg-emerald-500/10 border border-emerald-500/20">
-              <div className="flex items-center justify-between mb-2">
-                <span className="text-sm font-semibold text-emerald-500">One-time address generated:</span>
-                <Button variant="ghost" size="sm" onClick={handleResolve} className="h-6 px-2 text-xs" disabled={step !== ''}>
-                  <RefreshCw className="w-3 h-3 mr-1" /> New Address
+          <div className="space-y-6 animate-in fade-in zoom-in-95 duration-500">
+            <div className="p-4 rounded-lg bg-muted/50 border border-border space-y-3">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-1.5 text-xs font-bold text-success uppercase tracking-wider">
+                  <Shield className="w-3.5 h-3.5" /> Stealth Address Generated
+                </div>
+                <Button variant="ghost" size="sm" onClick={handleResolve} className="h-6 px-2 text-[10px] uppercase font-bold" disabled={step !== ''}>
+                  <RefreshCw className="w-3 h-3 mr-1" /> Regenerate
                 </Button>
               </div>
-              <div className="flex items-center gap-2">
-                <code className="text-sm font-mono flex-1 truncate text-foreground">
+              <div className="flex items-center gap-2 bg-background/50 p-2.5 rounded border border-border/50">
+                <code className="text-[13px] font-mono flex-1 truncate text-foreground/80">
                   {stealthAddress}
                 </code>
-                <Button variant="outline" size="icon" className="h-8 w-8 shrink-0" onClick={copyAddress}>
-                  {isCopied ? <CheckCircle2 className="w-4 h-4 text-emerald-500" /> : <Copy className="w-4 h-4" />}
+                <Button variant="ghost" size="icon" className="h-7 w-7" onClick={copyAddress}>
+                  {isCopied ? <CheckCircle2 className="w-3.5 h-3.5 text-success" /> : <Copy className="w-3.5 h-3.5" />}
                 </Button>
               </div>
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="amount">Amount (ETH)</Label>
-              <Input
-                id="amount"
-                type="number"
-                min="0"
-                step="0.001"
-                value={amount}
-                onChange={(e) => setAmount(e.target.value)}
-                disabled={step !== ''}
-              />
+              <Label htmlFor="amount" className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Amount (ETH)</Label>
+              <div className="relative">
+                <Input
+                  id="amount"
+                  type="number"
+                  min="0"
+                  step="0.001"
+                  value={amount}
+                  onChange={(e) => setAmount(e.target.value)}
+                  className="h-12 pl-4 pr-12 text-lg font-semibold bg-background/50"
+                  disabled={step !== ''}
+                />
+                <span className="absolute right-4 top-1/2 -translate-y-1/2 text-muted-foreground font-bold text-sm">ETH</span>
+              </div>
             </div>
 
             {step === 'Done' ? (
-              <div className="p-4 rounded-lg bg-emerald-500/10 border border-emerald-500/20 text-center">
-                <CheckCircle2 className="w-8 h-8 text-emerald-500 mx-auto mb-2" />
-                <p className="font-semibold text-emerald-500">Payment sent privately!</p>
-                <Button variant="outline" className="mt-4 w-full" onClick={() => {
+              <div className="p-6 rounded-lg bg-success/10 border border-success/20 text-center space-y-4">
+                <div className="w-12 h-12 rounded-full bg-success/20 flex items-center justify-center mx-auto text-success">
+                  <CheckCircle2 className="w-6 h-6" />
+                </div>
+                <div>
+                  <h4 className="font-bold text-success">Payment Sent!</h4>
+                  <p className="text-xs text-muted-foreground mt-1">Funds are now private on-chain.</p>
+                </div>
+                <Button variant="outline" size="sm" className="w-full h-10 font-bold" onClick={() => {
                   setStealthAddress(null)
                   setStep('')
                   setName('')
@@ -167,7 +184,7 @@ export function SendForm() {
               </div>
             ) : (
               <Button 
-                className="w-full font-bold h-12" 
+                className="w-full font-bold h-12 text-lg transition-all active:scale-[0.98]" 
                 size="lg" 
                 onClick={handleSend}
                 disabled={!amount || step !== ''}
@@ -179,7 +196,7 @@ export function SendForm() {
                   </>
                 ) : (
                   <>
-                    Send ETH <ArrowRight className="ml-2 w-4 h-4" />
+                    Send Payment <ArrowRight className="ml-2 w-5 h-5" />
                   </>
                 )}
               </Button>
@@ -187,6 +204,11 @@ export function SendForm() {
           </div>
         )}
       </CardContent>
+      <CardFooter className="bg-muted/30 border-t py-3 justify-center">
+        <p className="text-[10px] text-muted-foreground flex items-center gap-1">
+          <Zap className="w-3 h-3" /> Powered by EIP-5564 & Zero-Link Architecture
+        </p>
+      </CardFooter>
     </Card>
   )
 }
