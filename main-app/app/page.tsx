@@ -2,125 +2,94 @@
 
 import { useState } from 'react'
 import { RegisterForm } from '@/components/RegisterForm'
-import { SendForm } from '@/components/SendForm'
-import { SweepDashboard } from '@/components/SweepDashboard'
 import { useAccount } from 'wagmi'
 import Link from 'next/link'
-import { ArrowRight, ShieldCheck, EyeOff, Zap, Shield, Send, Inbox } from 'lucide-react'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { ShieldCheck, EyeOff, Zap, Shield, ArrowRight } from 'lucide-react'
+import { Button } from '@/components/ui/button'
 
 export default function Home() {
-  const { isConnected, address } = useAccount()
+  const { isConnected } = useAccount()
   const [registeredName, setRegisteredName] = useState<string | null>(null)
 
   return (
-    <div className="flex flex-col items-center py-12 px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto space-y-16">
+    <div className="flex flex-col items-center py-20 px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto space-y-20">
       
       {/* Hero Section */}
       <div className="w-full text-center space-y-6 animate-in fade-in slide-in-from-bottom-8 duration-700">
         <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-bold uppercase tracking-widest mb-2 border border-primary/20">
-          <ShieldCheck className="w-3.5 h-3.5" /> Zero-Link Protocol Active
+          <ShieldCheck className="w-3.5 h-3.5" /> Privacy Engine Active
         </div>
         <h1 className="text-4xl sm:text-6xl font-black tracking-tight text-foreground leading-[1.1]">
-          Privacy is now a <span className="text-primary italic">right</span>,<br />not a luxury.
+          Receive payments <span className="text-primary italic">privately</span>.
         </h1>
         <p className="text-lg text-muted-foreground max-w-2xl mx-auto leading-relaxed">
-          Zyn allows you to receive payments through mathematically derived stealth addresses. 
-          No link between your identity and your balance. Ever.
+          Secure your crypto identity. Register a handle and receive funds through one-time, untraceable addresses. 
         </p>
       </div>
 
-      {/* Main Interface */}
-      <div className="w-full max-w-3xl animate-in fade-in slide-in-from-bottom-12 duration-1000 delay-150">
+      {/* Main Action Area */}
+      <div className="w-full max-w-md animate-in fade-in slide-in-from-bottom-12 duration-1000 delay-150">
         {!isConnected ? (
           <div className="text-center p-12 rounded-3xl border-2 border-dashed border-border bg-card/30 backdrop-blur-sm space-y-6">
             <div className="w-20 h-20 rounded-full bg-muted flex items-center justify-center mx-auto text-muted-foreground/30">
               <Shield className="w-10 h-10" />
             </div>
             <div>
-              <h2 className="text-2xl font-bold">Secure Connection Required</h2>
-              <p className="text-muted-foreground mt-2">Please connect your wallet to interact with the Zyn Protocol.</p>
+              <h2 className="text-2xl font-bold">Wallet Required</h2>
+              <p className="text-muted-foreground mt-2">Please connect your wallet to claim your private name.</p>
+            </div>
+          </div>
+        ) : registeredName ? (
+          <div className="text-center p-12 rounded-3xl bg-success/5 border border-success/20 animate-in zoom-in-95 duration-500 shadow-lg shadow-success/5">
+            <div className="w-16 h-16 rounded-full bg-success/20 flex items-center justify-center mx-auto mb-6 text-success">
+              <ShieldCheck className="w-8 h-8" />
+            </div>
+            <h2 className="text-3xl font-bold text-success mb-2">You're Protected!</h2>
+            <p className="text-foreground text-lg mb-8 opacity-80">
+              Your name <span className="font-black text-success">@{registeredName}.zyn.eth</span> is ready.
+            </p>
+            <div className="flex flex-col gap-3">
+              <Button size="lg" className="font-bold rounded-xl h-12 px-8 w-full" asChild>
+                <Link href="/dashboard">Open Dashboard <ArrowRight className="ml-2 w-4 h-4" /></Link>
+              </Button>
+              <Button variant="ghost" size="sm" onClick={() => setRegisteredName(null)}>
+                Register another name
+              </Button>
             </div>
           </div>
         ) : (
-          <Tabs defaultValue="register" className="w-full">
-            <TabsList className="grid w-full grid-cols-3 h-14 p-1.5 bg-muted/50 rounded-2xl border border-border/50">
-              <TabsTrigger value="register" className="rounded-xl font-bold gap-2 data-[state=active]:bg-background data-[state=active]:shadow-sm transition-all">
-                <Shield className="w-4 h-4" /> Register
-              </TabsTrigger>
-              <TabsTrigger value="send" className="rounded-xl font-bold gap-2 data-[state=active]:bg-background data-[state=active]:shadow-sm transition-all">
-                <Send className="w-4 h-4" /> Send
-              </TabsTrigger>
-              <TabsTrigger value="receive" className="rounded-xl font-bold gap-2 data-[state=active]:bg-background data-[state=active]:shadow-sm transition-all">
-                <Inbox className="w-4 h-4" /> Dashboard
-              </TabsTrigger>
-            </TabsList>
-            
-            <div className="mt-8">
-              <TabsContent value="register">
-                {registeredName ? (
-                  <div className="text-center p-12 rounded-3xl bg-success/5 border border-success/20 animate-in zoom-in-95 duration-500">
-                    <div className="w-16 h-16 rounded-full bg-success/20 flex items-center justify-center mx-auto mb-6 text-success">
-                      <ShieldCheck className="w-8 h-8" />
-                    </div>
-                    <h2 className="text-3xl font-bold text-success mb-2">Registration Success!</h2>
-                    <p className="text-foreground text-lg mb-8 opacity-80">
-                      Your identity <span className="font-black text-success">@{registeredName}.zyn.eth</span> is now private.
-                    </p>
-                    <div className="flex gap-4 justify-center">
-                      <Button variant="outline" size="lg" className="font-bold rounded-xl h-12" onClick={() => setRegisteredName(null)}>
-                        Back
-                      </Button>
-                      <Button size="lg" className="font-bold rounded-xl h-12 px-8 shadow-lg shadow-primary/20" asChild>
-                        <Link href="/dashboard">View Dashboard</Link>
-                      </Button>
-                    </div>
-                  </div>
-                ) : (
-                  <RegisterForm onSuccess={(name) => setRegisteredName(name)} />
-                )}
-              </TabsContent>
-              
-              <TabsContent value="send">
-                <SendForm />
-              </TabsContent>
-              
-              <TabsContent value="receive">
-                <SweepDashboard />
-              </TabsContent>
-            </div>
-          </Tabs>
+          <RegisterForm onSuccess={(name) => setRegisteredName(name)} />
         )}
       </div>
 
-      {/* Trust Pillars */}
-      <div className="grid sm:grid-cols-3 gap-12 w-full max-w-5xl pt-12 animate-in fade-in slide-in-from-bottom-16 duration-1000 delay-300">
-        <div className="space-y-4 group">
-          <div className="w-14 h-14 rounded-2xl bg-card border border-border/50 flex items-center justify-center text-primary group-hover:bg-primary/5 transition-colors duration-500">
-            <EyeOff className="w-7 h-7" />
+      {/* Simplified Features */}
+      <div className="grid sm:grid-cols-3 gap-12 w-full max-w-5xl pt-12 animate-in fade-in slide-in-from-bottom-16 duration-1000 delay-300 border-t border-border/30">
+        <div className="space-y-4">
+          <div className="w-12 h-12 rounded-xl bg-primary/5 flex items-center justify-center text-primary">
+            <EyeOff className="w-6 h-6" />
           </div>
-          <h3 className="font-bold text-xl">Zero Linkability</h3>
-          <p className="text-sm text-muted-foreground leading-relaxed">Every transaction uses a mathematically fresh address. Senders cannot track your wealth or history.</p>
+          <h3 className="font-bold text-lg">Untraceable</h3>
+          <p className="text-sm text-muted-foreground">Every payment uses a fresh address. No one can track your total balance.</p>
         </div>
-        <div className="space-y-4 group">
-          <div className="w-14 h-14 rounded-2xl bg-card border border-border/50 flex items-center justify-center text-primary group-hover:bg-primary/5 transition-colors duration-500">
-            <ShieldCheck className="w-7 h-7" />
+        <div className="space-y-4">
+          <div className="w-12 h-12 rounded-xl bg-primary/5 flex items-center justify-center text-primary">
+            <ShieldCheck className="w-6 h-6" />
           </div>
-          <h3 className="font-bold text-xl">Client-Side Keys</h3>
-          <p className="text-sm text-muted-foreground leading-relaxed">Encryption runs in your browser. We never see your private keys. Your identity is stored on the official ENS Registry.</p>
+          <h3 className="font-bold text-lg">Fully Secure</h3>
+          <p className="text-sm text-muted-foreground">Encryption happens in your browser. Only you have the keys to your funds.</p>
         </div>
-        <div className="space-y-4 group">
-          <div className="w-14 h-14 rounded-2xl bg-card border border-border/50 flex items-center justify-center text-primary group-hover:bg-primary/5 transition-colors duration-500">
-            <Zap className="w-7 h-7" />
+        <div className="space-y-4">
+          <div className="w-12 h-12 rounded-xl bg-primary/5 flex items-center justify-center text-primary">
+            <Zap className="w-6 h-6" />
           </div>
-          <h3 className="font-bold text-xl">EIP-5564 Standard</h3>
-          <p className="text-sm text-muted-foreground leading-relaxed">Built on the latest Ethereum stealth standards. High-performance scanning with 1-byte view tags for speed.</p>
+          <h3 className="font-bold text-lg">Easy to Use</h3>
+          <p className="text-sm text-muted-foreground">Built on standard ENS. Anyone can pay you using just your name.</p>
         </div>
       </div>
 
-      <footer className="w-full pt-20 pb-8 border-t border-border/30 text-center space-y-4">
-        <div className="text-sm font-medium text-muted-foreground/50">
-          © 2026 Zyn Protocol. Built with 🛡️ on Sepolia.
+      <footer className="w-full pb-8 text-center">
+        <div className="text-[10px] uppercase tracking-widest font-bold text-muted-foreground/30">
+          Powered by Zyn Protocol • Privacy First
         </div>
       </footer>
     </div>

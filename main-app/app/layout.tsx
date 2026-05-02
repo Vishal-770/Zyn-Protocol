@@ -34,11 +34,11 @@ export default function RootLayout({
                   ZYN<span className="text-primary/50">.PAY</span>
                 </Link>
                 <div className="hidden md:flex gap-6">
-                  <Link href="/" className="text-sm font-bold text-muted-foreground hover:text-primary transition-colors">
-                    Terminal
+                  <Link href="/pay" className="text-sm font-bold text-muted-foreground hover:text-primary transition-colors">
+                    Send
                   </Link>
                   <Link href="/dashboard" className="text-sm font-bold text-muted-foreground hover:text-primary transition-colors">
-                    Legacy Dashboard
+                    Dashboard
                   </Link>
                 </div>
               </div>
