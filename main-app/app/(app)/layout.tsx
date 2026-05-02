@@ -49,11 +49,11 @@ export default function AppLayout({
     <div className="flex h-screen bg-background overflow-hidden">
       <Sidebar />
       <div className="flex-1 flex flex-col overflow-hidden">
-        <header className="h-16 border-b bg-card/50 backdrop-blur-md flex items-center justify-end px-8 shrink-0">
+        <header className="h-20 border-b border-border/40 bg-background/50 backdrop-blur-xl flex items-center justify-end px-8 shrink-0 z-30">
           <WalletConnect />
         </header>
-        <main className="flex-1 overflow-y-auto p-8">
-          <div className="max-w-5xl mx-auto animate-in fade-in slide-in-from-bottom-4 duration-700">
+        <main className="flex-1 overflow-y-auto bg-muted/20">
+          <div className="max-w-5xl mx-auto p-8 animate-in fade-in slide-in-from-bottom-4 duration-1000">
             {children}
           </div>
         </main>
