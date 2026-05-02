@@ -1,6 +1,6 @@
 'use client'
 
-import { Shield, Github, Twitter, MessageSquare } from "lucide-react";
+import { Shield, Globe, ExternalLink, MessageSquare } from "lucide-react";
 import Link from "next/link";
 
 export function MarketingFooter() {
@@ -18,10 +18,10 @@ export function MarketingFooter() {
             </p>
             <div className="flex gap-4">
               <a href="#" className="w-10 h-10 rounded-full bg-muted flex items-center justify-center hover:bg-primary hover:text-primary-foreground transition-all">
-                <Twitter className="w-5 h-5" />
+                <Globe className="w-5 h-5" />
               </a>
               <a href="#" className="w-10 h-10 rounded-full bg-muted flex items-center justify-center hover:bg-primary hover:text-primary-foreground transition-all">
-                <Github className="w-5 h-5" />
+                <ExternalLink className="w-5 h-5" />
               </a>
               <a href="#" className="w-10 h-10 rounded-full bg-muted flex items-center justify-center hover:bg-primary hover:text-primary-foreground transition-all">
                 <MessageSquare className="w-5 h-5" />
