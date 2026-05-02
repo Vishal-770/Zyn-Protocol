@@ -17,7 +17,8 @@ import {
   TrendingUp,
   ShieldCheck,
   AlertCircle,
-  Loader2
+  Loader2,
+  Inbox
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
