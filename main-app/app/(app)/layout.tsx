@@ -4,7 +4,7 @@ import { Sidebar } from "@/components/Sidebar";
 import { WalletConnect } from "@/components/WalletConnect";
 import { useAccount } from "wagmi";
 import { useState } from "react";
-import { Loader2, ShieldAlert, Menu, X } from "lucide-react";
+import { Loader2, ShieldAlert, PanelLeftClose, PanelLeftOpen } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 
@@ -49,31 +49,27 @@ export default function AppLayout({
 
   return (
     <div className="flex h-screen bg-background overflow-hidden">
-      {/* Sidebar - Controlled by Layout State */}
       <Sidebar collapsed={collapsed} />
       
       <div className="flex-1 flex flex-col overflow-hidden">
-        {/* Horizontal Navbar */}
         <header className="h-20 border-b border-border/40 bg-background/50 backdrop-blur-xl flex items-center justify-between px-6 shrink-0 z-30">
           <div className="flex items-center gap-4">
             <button 
               onClick={() => setCollapsed(!collapsed)}
               className="p-2 rounded-lg text-muted-foreground hover:bg-muted hover:text-foreground transition-all"
-              title={collapsed ? "Expand Sidebar" : "Collapse Sidebar"}
             >
-              {collapsed ? <Menu className="w-5 h-5" /> : <X className="w-5 h-5" />}
+              {collapsed ? <PanelLeftOpen className="w-5 h-5" /> : <PanelLeftClose className="w-5 h-5" />}
             </button>
             <div className="h-4 w-[1px] bg-border/40 mx-2 hidden sm:block" />
-            <span className="text-xs font-bold uppercase tracking-widest text-muted-foreground/50 hidden sm:block">
-              Zyn Terminal
+            <span className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/40 hidden sm:block">
+              Zyn Protocol v1.0
             </span>
           </div>
           
           <WalletConnect />
         </header>
 
-        {/* Main Content Area */}
-        <main className="flex-1 overflow-y-auto bg-muted/20">
+        <main className="flex-1 overflow-y-auto bg-muted/10">
           <div className="max-w-5xl mx-auto p-8 animate-in fade-in slide-in-from-bottom-4 duration-1000">
             {children}
           </div>

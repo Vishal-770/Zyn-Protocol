@@ -31,23 +31,25 @@ export function Sidebar({ collapsed }: SidebarProps) {
         collapsed ? "w-[72px]" : "w-64"
       )}
     >
-      {/* Branding Section - Simplified */}
-      <div className="h-20 flex items-center px-6 mb-4">
-        <div className="flex items-center gap-3 overflow-hidden">
+      {/* Branding Section - Fix centering and breaking */}
+      <div className="h-20 flex items-center px-6 shrink-0 overflow-hidden">
+        <div className={cn("flex items-center gap-3", collapsed && "mx-auto")}>
           <div className="w-8 h-8 rounded-md bg-foreground flex items-center justify-center text-background shrink-0 shadow-sm">
             <Shield className="w-4 h-4" />
           </div>
           {!collapsed && (
-            <span className="font-black tracking-tighter text-xl uppercase">Zyn</span>
+            <span className="font-black tracking-tighter text-xl uppercase whitespace-nowrap animate-in fade-in duration-300">
+              Zyn
+            </span>
           )}
         </div>
       </div>
 
       {/* Navigation */}
-      <nav className="flex-1 px-3 space-y-1">
+      <nav className="flex-1 px-3 mt-4 space-y-1">
         {!collapsed && (
           <div className="px-3 mb-4 text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground/50">
-            Protocol
+            Internal
           </div>
         )}
         {menuItems.map((item) => {
@@ -62,7 +64,8 @@ export function Sidebar({ collapsed }: SidebarProps) {
                 "flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200 group relative",
                 isActive 
                   ? "bg-muted text-foreground" 
-                  : "text-muted-foreground hover:bg-muted/50 hover:text-foreground"
+                  : "text-muted-foreground hover:bg-muted/50 hover:text-foreground",
+                collapsed && "justify-center"
               )}
             >
               {isActive && (
@@ -75,13 +78,13 @@ export function Sidebar({ collapsed }: SidebarProps) {
               )} />
               
               {!collapsed && (
-                <span className={cn("text-sm font-semibold tracking-tight", isActive ? "font-bold" : "font-medium")}>
+                <span className={cn("text-sm font-semibold tracking-tight whitespace-nowrap", isActive ? "font-bold" : "font-medium")}>
                   {item.name}
                 </span>
               )}
 
               {collapsed && (
-                <div className="absolute left-16 bg-foreground text-background text-[10px] font-bold px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none uppercase tracking-wider z-50 whitespace-nowrap">
+                <div className="absolute left-16 bg-foreground text-background text-[10px] font-bold px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none uppercase tracking-wider z-50 whitespace-nowrap shadow-xl">
                   {item.name}
                 </div>
               )}
@@ -101,7 +104,7 @@ export function Sidebar({ collapsed }: SidebarProps) {
           )}
         >
           <ExternalLink className="w-4 h-4 shrink-0 opacity-40 group-hover:opacity-100" />
-          {!collapsed && <span className="text-sm font-semibold tracking-tight">Documentation</span>}
+          {!collapsed && <span className="text-sm font-semibold tracking-tight whitespace-nowrap">Docs</span>}
         </a>
       </div>
 
