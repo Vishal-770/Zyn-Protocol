@@ -1,6 +1,6 @@
 'use client'
 
-import { WalletConnect } from "@/components/WalletConnect";
+import { WalletConnect } from "./WalletConnect";
 import { Shield } from "lucide-react";
 import Link from "next/link";
 import { useAccount } from "wagmi";

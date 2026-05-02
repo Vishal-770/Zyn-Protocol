@@ -1,7 +1,7 @@
 'use client'
 
-import { MarketingNavbar } from "@/components/MarketingNavbar";
-import { MarketingFooter } from "@/components/MarketingFooter";
+import { MarketingNavbar } from "../../components/MarketingNavbar";
+import { MarketingFooter } from "../../components/MarketingFooter";
 import { Toaster } from "@/components/ui/sonner";
 
 export default function MarketingLayout({
