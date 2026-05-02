@@ -1,6 +1,6 @@
-# 🛡️ Zyn StealthPay (Zero-Link)
+# 🛡️ Zyn Protocol
 
-**Zyn StealthPay** is a minimalist, high-privacy stealth payment system for ENS. It implements a "Zero-Link" architecture where identity and financial data are completely decoupled through stateless smart contracts and client-side cryptography.
+**Zyn Protocol** is a minimalist, high-privacy stealth payment system for ENS. It implements a "Zero-Link" architecture where identity and financial data are completely decoupled through stateless smart contracts and client-side cryptography.
 
 ## 🚀 Key Features
 

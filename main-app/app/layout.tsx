@@ -11,8 +11,8 @@ import { Shield } from "lucide-react";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "StealthPay",
-  description: "Your private Web3 identity",
+  title: "Zyn Protocol",
+  description: "Privacy-first Web3 identity",
 };
 
 export default function RootLayout({
@@ -31,7 +31,7 @@ export default function RootLayout({
                   <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center text-primary-foreground">
                     <Shield className="w-5 h-5" />
                   </div>
-                  ZYN<span className="text-primary/50">.PAY</span>
+                  Zyn Protocol
                 </Link>
                 <div className="hidden md:flex gap-6">
                   <Link href="/pay" className="text-sm font-bold text-muted-foreground hover:text-primary transition-colors">

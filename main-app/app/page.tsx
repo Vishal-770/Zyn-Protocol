@@ -17,7 +17,7 @@ export default function Home() {
       {/* Hero Section */}
       <div className="w-full text-center space-y-6 animate-in fade-in slide-in-from-bottom-8 duration-700">
         <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-bold uppercase tracking-widest mb-2 border border-primary/20">
-          <ShieldCheck className="w-3.5 h-3.5" /> Privacy Engine Active
+          <ShieldCheck className="w-3.5 h-3.5" /> Zyn Protocol Active
         </div>
         <h1 className="text-4xl sm:text-6xl font-black tracking-tight text-foreground leading-[1.1]">
           Receive payments <span className="text-primary italic">privately</span>.
