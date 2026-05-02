@@ -3,8 +3,6 @@
 import { Sidebar } from "@/components/Sidebar";
 import { WalletConnect } from "@/components/WalletConnect";
 import { useAccount } from "wagmi";
-import { redirect } from "next/navigation";
-import { useEffect } from "react";
 import { Loader2, ShieldAlert } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
@@ -16,8 +14,16 @@ export default function AppLayout({
 }) {
   const { isConnected, isConnecting } = useAccount();
 
-  // Route Guard: Redirect or block access if wallet not connected
-  if (!isConnecting && !isConnected) {
+  if (isConnecting) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-screen bg-background">
+        <Loader2 className="w-10 h-10 text-primary animate-spin" />
+        <p className="mt-4 font-bold text-muted-foreground animate-pulse">Checking credentials...</p>
+      </div>
+    );
+  }
+
+  if (!isConnected) {
     return (
       <div className="flex flex-col items-center justify-center min-h-screen bg-background p-6 text-center space-y-6 animate-in fade-in duration-500">
         <div className="w-20 h-20 rounded-full bg-destructive/10 flex items-center justify-center text-destructive mb-4">
@@ -35,15 +41,6 @@ export default function AppLayout({
           </Button>
           <WalletConnect />
         </div>
-      </div>
-    );
-  }
-
-  if (isConnecting) {
-    return (
-      <div className="flex flex-col items-center justify-center min-h-screen bg-background">
-        <Loader2 className="w-10 h-10 text-primary animate-spin" />
-        <p className="mt-4 font-bold text-muted-foreground animate-pulse">Checking credentials...</p>
       </div>
     );
   }
