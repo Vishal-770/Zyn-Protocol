@@ -94,36 +94,37 @@ export function Sidebar() {
       </nav>
 
       {/* Bottom Actions */}
-      <div className="p-3 space-y-1">
-        <a 
-          href="https://github.com/Vishal-770/Zyn-Protocol" 
-          target="_blank"
-          className={cn(
-            "flex items-center gap-3 px-3 py-2.5 rounded-lg text-muted-foreground hover:bg-muted/50 hover:text-foreground transition-all group",
-            collapsed && "justify-center"
-          )}
-        >
-          <ExternalLink className="w-5 h-5 shrink-0 opacity-40 group-hover:opacity-100" />
-          {!collapsed && <span className="text-sm font-medium">Documentation</span>}
-        </a>
-        
-        <Button 
-          variant="ghost" 
-          className={cn(
-            "w-full justify-start gap-3 px-3 rounded-lg font-bold text-muted-foreground/60 hover:text-foreground hover:bg-muted/50 h-11",
-            collapsed && "justify-center"
-          )}
-          onClick={() => setCollapsed(!collapsed)}
-        >
-          {collapsed ? (
-            <ChevronRight className="w-5 h-5" />
-          ) : (
-            <>
-              <ChevronLeft className="w-5 h-5 shrink-0" />
-              <span className="text-sm font-bold">Collapse View</span>
-            </>
-          )}
-        </Button>
+      <div className="mt-auto border-t border-border/40">
+        <div className="p-3 space-y-1">
+          <a 
+            href="https://github.com/Vishal-770/Zyn-Protocol" 
+            target="_blank"
+            className={cn(
+              "flex items-center gap-3 px-3 py-2.5 rounded-lg text-muted-foreground hover:bg-muted/50 hover:text-foreground transition-all group",
+              collapsed && "justify-center"
+            )}
+          >
+            <ExternalLink className="w-4 h-4 shrink-0 opacity-40 group-hover:opacity-100" />
+            {!collapsed && <span className="text-sm font-semibold tracking-tight">Documentation</span>}
+          </a>
+          
+          <button 
+            onClick={() => setCollapsed(!collapsed)}
+            className={cn(
+              "w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-muted-foreground/60 hover:text-foreground hover:bg-muted/50 transition-all group",
+              collapsed && "justify-center"
+            )}
+          >
+            {collapsed ? (
+              <ChevronRight className="w-4 h-4 shrink-0" />
+            ) : (
+              <>
+                <ChevronLeft className="w-4 h-4 shrink-0" />
+                <span className="text-sm font-bold tracking-tight">Collapse View</span>
+              </>
+            )}
+          </button>
+        </div>
       </div>
 
       {/* Subtle Bottom Border Overlay for Depth */}
