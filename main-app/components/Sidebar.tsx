@@ -8,7 +8,8 @@ import {
   Send, 
   LayoutDashboard,
   Key,
-  ExternalLink
+  ExternalLink,
+  X
 } from 'lucide-react'
 
 const menuItems = [
@@ -19,38 +20,53 @@ const menuItems = [
 
 interface SidebarProps {
   collapsed: boolean;
+  mobileOpen?: boolean;
+  onClose?: () => void;
 }
 
-export function Sidebar({ collapsed }: SidebarProps) {
+export function Sidebar({ collapsed, mobileOpen, onClose }: SidebarProps) {
   const pathname = usePathname()
 
   return (
     <aside 
       className={cn(
-        "bg-background border-r border-border/40 flex flex-col transition-all duration-300 ease-in-out relative z-40",
-        collapsed ? "w-[72px]" : "w-64"
+        // Base styles
+        "bg-background border-r border-border/40 flex flex-col transition-all duration-300 ease-in-out z-50",
+        // Desktop styles
+        "md:relative",
+        collapsed ? "md:w-[72px]" : "md:w-64",
+        // Mobile styles
+        "fixed inset-y-0 left-0 w-64 md:translate-x-0 shadow-2xl md:shadow-none",
+        mobileOpen ? "translate-x-0" : "-translate-x-full"
       )}
     >
-      {/* Branding Section - Absolute Centering for Collapsed View */}
-      <div className={cn(
-        "h-20 flex items-center shrink-0 overflow-hidden transition-all duration-300",
-        collapsed ? "justify-center px-0" : "px-6"
-      )}>
-        <div className="flex items-center gap-3">
+      {/* Branding Section */}
+      <div className="h-20 flex items-center justify-between px-6 shrink-0 overflow-hidden">
+        <div className={cn("flex items-center gap-3", (collapsed && !mobileOpen) && "md:mx-auto")}>
           <div className="w-8 h-8 rounded-md bg-foreground flex items-center justify-center text-background shrink-0 shadow-sm">
             <Shield className="w-4 h-4" />
           </div>
-          {!collapsed && (
+          {(!collapsed || mobileOpen) && (
             <span className="font-black tracking-tighter text-xl uppercase whitespace-nowrap animate-in fade-in duration-300">
               Zyn
             </span>
           )}
         </div>
+
+        {/* Mobile Close Button */}
+        {mobileOpen && (
+          <button 
+            onClick={onClose}
+            className="md:hidden p-2 rounded-lg hover:bg-muted text-muted-foreground"
+          >
+            <X className="w-5 h-5" />
+          </button>
+        )}
       </div>
 
       {/* Navigation */}
       <nav className="flex-1 px-3 mt-4 space-y-1">
-        {!collapsed && (
+        {(!collapsed || mobileOpen) && (
           <div className="px-3 mb-4 text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground/50">
             Internal
           </div>
@@ -63,12 +79,13 @@ export function Sidebar({ collapsed }: SidebarProps) {
             <Link 
               key={item.href}
               href={item.href}
+              onClick={onClose} // Close on mobile navigation
               className={cn(
                 "flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200 group relative",
                 isActive 
                   ? "bg-muted text-foreground" 
                   : "text-muted-foreground hover:bg-muted/50 hover:text-foreground",
-                collapsed && "justify-center"
+                (collapsed && !mobileOpen) && "md:justify-center"
               )}
             >
               {isActive && (
@@ -80,14 +97,15 @@ export function Sidebar({ collapsed }: SidebarProps) {
                 isActive ? "text-primary" : "text-muted-foreground/60 group-hover:text-foreground"
               )} />
               
-              {!collapsed && (
+              {(!collapsed || mobileOpen) && (
                 <span className={cn("text-sm font-semibold tracking-tight whitespace-nowrap", isActive ? "font-bold" : "font-medium")}>
                   {item.name}
                 </span>
               )}
 
-              {collapsed && (
-                <div className="absolute left-16 bg-foreground text-background text-[10px] font-bold px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none uppercase tracking-wider z-50 whitespace-nowrap shadow-xl">
+              {/* Tooltip (Desktop Only) */}
+              {(collapsed && !mobileOpen) && (
+                <div className="hidden md:block absolute left-16 bg-foreground text-background text-[10px] font-bold px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none uppercase tracking-wider z-50 whitespace-nowrap shadow-xl">
                   {item.name}
                 </div>
               )}
@@ -103,15 +121,13 @@ export function Sidebar({ collapsed }: SidebarProps) {
           target="_blank"
           className={cn(
             "flex items-center gap-3 px-3 py-2.5 rounded-lg text-muted-foreground hover:bg-muted/50 hover:text-foreground transition-all group",
-            collapsed && "justify-center"
+            (collapsed && !mobileOpen) && "md:justify-center"
           )}
         >
           <ExternalLink className="w-4 h-4 shrink-0 opacity-40 group-hover:opacity-100" />
-          {!collapsed && <span className="text-sm font-semibold tracking-tight whitespace-nowrap">Docs</span>}
+          {(!collapsed || mobileOpen) && <span className="text-sm font-semibold tracking-tight whitespace-nowrap">Docs</span>}
         </a>
       </div>
-
-      <div className="absolute bottom-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-border/20 to-transparent" />
     </aside>
   )
 }
