@@ -13,7 +13,8 @@ import {
   LayoutDashboard,
   Key,
   HelpCircle,
-  ExternalLink
+  ExternalLink,
+  Menu
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 
@@ -34,23 +35,39 @@ export function Sidebar() {
         collapsed ? "w-[72px]" : "w-64"
       )}
     >
-      {/* Branding Section */}
-      <div className="h-20 flex items-center px-6 mb-4">
+      {/* Branding & Collapse Toggle */}
+      <div className="h-20 flex items-center justify-between px-6 mb-4">
         <div className="flex items-center gap-3 overflow-hidden">
           <div className="w-8 h-8 rounded-md bg-foreground flex items-center justify-center text-background shrink-0 shadow-sm">
-            <Shield className="w-5 h-5" />
+            <Shield className="w-4 h-4" />
           </div>
           {!collapsed && (
             <span className="font-black tracking-tighter text-xl uppercase">Zyn</span>
           )}
         </div>
+        
+        <button 
+          onClick={() => setCollapsed(!collapsed)}
+          className={cn(
+            "p-1.5 rounded-md text-muted-foreground/40 hover:text-foreground hover:bg-muted transition-all",
+            collapsed && "absolute left-1/2 -translate-x-1/2 top-20"
+          )}
+        >
+          {collapsed ? (
+            <Menu className="w-4 h-4" />
+          ) : (
+            <ChevronLeft className="w-4 h-4" />
+          )}
+        </button>
       </div>
 
       {/* Navigation */}
       <nav className="flex-1 px-3 space-y-1">
-        <div className={cn("px-3 mb-2 text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground/50", collapsed && "hidden")}>
-          Protocol
-        </div>
+        {!collapsed && (
+          <div className="px-3 mb-4 text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground/50">
+            Protocol
+          </div>
+        )}
         {menuItems.map((item) => {
           const Icon = item.icon
           const isActive = pathname === item.href
@@ -66,7 +83,6 @@ export function Sidebar() {
                   : "text-muted-foreground hover:bg-muted/50 hover:text-foreground"
               )}
             >
-              {/* Active Accent Line */}
               {isActive && (
                 <div className="absolute left-0 w-1 h-5 bg-primary rounded-r-full" />
               )}
@@ -82,7 +98,6 @@ export function Sidebar() {
                 </span>
               )}
 
-              {/* Tooltip for collapsed mode */}
               {collapsed && (
                 <div className="absolute left-16 bg-foreground text-background text-[10px] font-bold px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none uppercase tracking-wider z-50 whitespace-nowrap">
                   {item.name}
@@ -94,40 +109,20 @@ export function Sidebar() {
       </nav>
 
       {/* Bottom Actions */}
-      <div className="mt-auto border-t border-border/40">
-        <div className="p-3 space-y-1">
-          <a 
-            href="https://github.com/Vishal-770/Zyn-Protocol" 
-            target="_blank"
-            className={cn(
-              "flex items-center gap-3 px-3 py-2.5 rounded-lg text-muted-foreground hover:bg-muted/50 hover:text-foreground transition-all group",
-              collapsed && "justify-center"
-            )}
-          >
-            <ExternalLink className="w-4 h-4 shrink-0 opacity-40 group-hover:opacity-100" />
-            {!collapsed && <span className="text-sm font-semibold tracking-tight">Documentation</span>}
-          </a>
-          
-          <button 
-            onClick={() => setCollapsed(!collapsed)}
-            className={cn(
-              "w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-muted-foreground/60 hover:text-foreground hover:bg-muted/50 transition-all group",
-              collapsed && "justify-center"
-            )}
-          >
-            {collapsed ? (
-              <ChevronRight className="w-4 h-4 shrink-0" />
-            ) : (
-              <>
-                <ChevronLeft className="w-4 h-4 shrink-0" />
-                <span className="text-sm font-bold tracking-tight">Collapse View</span>
-              </>
-            )}
-          </button>
-        </div>
+      <div className="mt-auto border-t border-border/40 p-3">
+        <a 
+          href="https://github.com/Vishal-770/Zyn-Protocol" 
+          target="_blank"
+          className={cn(
+            "flex items-center gap-3 px-3 py-2.5 rounded-lg text-muted-foreground hover:bg-muted/50 hover:text-foreground transition-all group",
+            collapsed && "justify-center"
+          )}
+        >
+          <ExternalLink className="w-4 h-4 shrink-0 opacity-40 group-hover:opacity-100" />
+          {!collapsed && <span className="text-sm font-semibold tracking-tight">Documentation</span>}
+        </a>
       </div>
 
-      {/* Subtle Bottom Border Overlay for Depth */}
       <div className="absolute bottom-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-border/20 to-transparent" />
     </aside>
   )
