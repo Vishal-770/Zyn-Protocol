@@ -14,10 +14,10 @@ if (typeof window !== 'undefined') {
 }
 
 // Professional Kinetic Split Text
-function SplitText({ children, className = "" }: { children: string; className?: string }) {
+function SplitText({ children, className = "" }: any) {
   return (
     <div className={`overflow-hidden flex flex-wrap gap-x-[0.2em] ${className}`}>
-      {children.split(" ").map((word, i) => (
+      {children.split(" ").map((word: any, i: any) => (
         <span key={i} className="split-word inline-block will-change-transform">
           {word}
         </span>
@@ -77,8 +77,8 @@ export default function Home() {
           }
         })
 
-        const items = gsap.utils.toArray<HTMLElement>(".pin-step")
-        items.forEach((item, i) => {
+        const items = gsap.utils.toArray(".pin-step")
+        items.forEach((item: any, i: any) => {
           gsap.timeline({
             scrollTrigger: {
               trigger: item,
@@ -101,7 +101,7 @@ export default function Home() {
       // 4. KINETIC FEATURE STREAM (Horizontal Pin)
       const featureStream = document.querySelector(".feature-stream")
       if (featureStream) {
-        const track = document.querySelector(".feature-track") as HTMLElement;
+        const track = document.querySelector(".feature-track") as any;
         gsap.to(track, {
           x: () => -(track.scrollWidth - window.innerWidth + (isDesktop ? 100 : 40)),
           ease: "none",
@@ -117,9 +117,9 @@ export default function Home() {
       }
 
       // 5. INFRASTRUCTURE REVEALS
-      const sections = gsap.utils.toArray<HTMLElement>(".reveal-group")
-      sections.forEach((section) => {
-        const elements = (section as HTMLElement).querySelectorAll(".reveal-el")
+      const sections = gsap.utils.toArray(".reveal-group")
+      sections.forEach((section: any) => {
+        const elements = section.querySelectorAll(".reveal-el")
         gsap.from(elements, {
           y: 50,
           opacity: 0,
@@ -127,7 +127,7 @@ export default function Home() {
           stagger: 0.15,
           ease: "power3.out",
           scrollTrigger: {
-            trigger: section as HTMLElement,
+            trigger: section,
             start: "top 85%",
             toggleActions: "play none none reverse"
           }
@@ -191,10 +191,10 @@ export default function Home() {
 
             <div className="hero-cta flex flex-wrap gap-4 sm:gap-8 pt-4 sm:pt-6">
               <Button size="lg" className="h-16 sm:h-20 px-8 sm:px-16 rounded-none font-black uppercase tracking-[0.4em] text-[9px] sm:text-[10px] bg-foreground text-background hover:bg-primary transition-all group" asChild>
-                <Link href="/register">Initialize <ArrowRight className="ml-2 sm:ml-4 w-4 sm:w-5 h-4 sm:h-5 group-hover:translate-x-2 transition-transform" /></Link>
+                <Link href="/register">Join Zyn <ArrowRight className="ml-2 sm:ml-4 w-4 sm:w-5 h-4 sm:h-5 group-hover:translate-x-2 transition-transform" /></Link>
               </Button>
               <Button variant="outline" size="lg" className="h-16 sm:h-20 px-8 sm:px-16 rounded-none font-black uppercase tracking-[0.4em] text-[9px] sm:text-[10px] border-2 border-border/20 dark:border-border/40 hover:border-primary transition-all bg-transparent" asChild>
-                <Link href="/pay">Execute Transfer</Link>
+                <Link href="/pay">Send Privately</Link>
               </Button>
             </div>
           </div>
@@ -341,7 +341,7 @@ export default function Home() {
           <div className="reveal-el pt-4 sm:pt-6">
             <Button size="lg" className="h-16 sm:h-20 w-full sm:w-auto px-12 sm:px-20 rounded-none font-black uppercase tracking-[0.4em] text-[10px] sm:text-[11px] bg-foreground text-background hover:bg-primary shadow-xl shadow-primary/10 transition-all group" asChild>
               <Link href="/register">
-                Initialize Registration <ArrowRight className="ml-4 w-4 h-4 group-hover:translate-x-2 transition-transform" />
+                Claim Your Identity <ArrowRight className="ml-4 w-4 h-4 group-hover:translate-x-2 transition-transform" />
               </Link>
             </Button>
           </div>

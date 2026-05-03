@@ -26,8 +26,8 @@ export function MarketingNavbar() {
         
         <div className="hidden md:flex items-center gap-12">
           {[
-            { name: "Infrastructure", href: "/#features" },
-            { name: "Terminal", href: "/dashboard" },
+            { name: "Features", href: "/#features" },
+            { name: "Dashboard", href: "/dashboard" },
             { name: "Docs", href: "#" }
           ].map((item) => (
             <Link 
@@ -44,7 +44,7 @@ export function MarketingNavbar() {
         <div className="flex items-center gap-6">
           {isConnected ? (
             <Button className="font-black uppercase tracking-[0.4em] text-[10px] rounded-none px-12 h-12 shadow-2xl shadow-primary/20 bg-foreground text-background hover:bg-primary transition-all" asChild>
-              <Link href="/dashboard">Access Vault</Link>
+              <Link href="/dashboard">Go to App</Link>
             </Button>
           ) : (
             <div className="scale-90 origin-right saturate-0 hover:saturate-100 transition-all">

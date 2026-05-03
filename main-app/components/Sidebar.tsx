@@ -3,8 +3,8 @@
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { cn } from '@/lib/utils'
+import Image from 'next/image'
 import { 
-  Shield, 
   Send, 
   LayoutDashboard,
   Key,
@@ -18,13 +18,7 @@ const menuItems = [
   { name: 'Private Send', href: '/pay', icon: Send },
 ]
 
-interface SidebarProps {
-  collapsed: boolean;
-  mobileOpen?: boolean;
-  onClose?: () => void;
-}
-
-export function Sidebar({ collapsed, mobileOpen, onClose }: SidebarProps) {
+export function Sidebar({ collapsed, mobileOpen, onClose }: any) {
   const pathname = usePathname()
 
   return (
@@ -43,8 +37,8 @@ export function Sidebar({ collapsed, mobileOpen, onClose }: SidebarProps) {
       {/* Branding Section */}
       <div className="h-20 flex items-center justify-between px-6 shrink-0 overflow-hidden">
         <div className={cn("flex items-center gap-3", (collapsed && !mobileOpen) && "md:mx-auto")}>
-          <div className="w-8 h-8 rounded-md bg-foreground flex items-center justify-center text-background shrink-0 shadow-sm">
-            <Shield className="w-4 h-4" />
+          <div className="relative w-8 h-8 flex items-center justify-center shrink-0">
+            <Image src="/logo.png" alt="Zyn" fill className="object-contain invert" />
           </div>
           {(!collapsed || mobileOpen) && (
             <span className="font-black tracking-tighter text-xl uppercase whitespace-nowrap animate-in fade-in duration-300">

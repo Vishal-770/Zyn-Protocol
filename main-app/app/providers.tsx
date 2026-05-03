@@ -6,9 +6,9 @@ import { RainbowKitProvider, darkTheme } from '@rainbow-me/rainbowkit'
 import { getWagmiConfig } from '@/lib/wagmi'
 import { useState, useEffect, useMemo } from 'react'
 
-export function Providers({ children }: { children: React.ReactNode }) {
+export function Providers({ children }: any) {
   const [mounted, setMounted] = useState(false)
-  const queryClient = useMemo(() => new QueryClient(), [])
+  const queryClient = useMemo(() => new QueryClient() as any, [])
   
   useEffect(() => {
     setMounted(true)

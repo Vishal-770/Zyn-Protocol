@@ -31,7 +31,7 @@ export function MarketingFooter() {
           <div>
             <h4 className="font-black uppercase tracking-[0.4em] text-[10px] text-primary mb-8 italic">Protocol</h4>
             <ul className="space-y-4 text-[11px] font-black uppercase tracking-widest text-muted-foreground/60">
-              <li><Link href="/dashboard" className="hover:text-primary transition-colors">Infrastructure</Link></li>
+              <li><Link href="/dashboard" className="hover:text-primary transition-colors">Dashboard</Link></li>
               <li><Link href="/pay" className="hover:text-primary transition-colors">Transactions</Link></li>
               <li><Link href="/register" className="hover:text-primary transition-colors">Identity</Link></li>
             </ul>
@@ -42,7 +42,7 @@ export function MarketingFooter() {
             <ul className="space-y-4 text-[11px] font-black uppercase tracking-widest text-muted-foreground/60">
               <li><a href="#" className="hover:text-primary transition-colors">Technical Docs</a></li>
               <li><a href="#" className="hover:text-primary transition-colors">EIP-5564 Spec</a></li>
-              <li><a href="#" className="hover:text-primary transition-colors">Github Source</a></li>
+              <li><a href="https://github.com/Vishal-770/Zyn-Protocol" target="_blank" rel="noopener noreferrer" className="hover:text-primary transition-colors">Github Source</a></li>
             </ul>
           </div>
         </div>

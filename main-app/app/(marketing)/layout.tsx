@@ -10,9 +10,7 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 export default function MarketingLayout({
   children,
-}: {
-  children: React.ReactNode;
-}) {
+}: any) {
   useLayoutEffect(() => {
     if (typeof window === 'undefined') return;
     
