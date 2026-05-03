@@ -24,3 +24,23 @@ dataSources:
         - event: Announcement(indexed uint256,indexed address,indexed address,bytes,bytes)
           handler: handleAnnouncement
       file: ./src/ephemeral-announcer.ts
+  - kind: ethereum
+    name: SubdomainRegistrar
+    network: sepolia
+    source:
+      address: "0x679aEb30E9b816BBcd96A00b00e439182763Bc22"
+      abi: SubdomainRegistrar
+      startBlock: 10777360
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.9
+      language: wasm/assemblyscript
+      entities:
+        - Registration
+      abis:
+        - name: SubdomainRegistrar
+          file: ./abis/SubdomainRegistrar.json
+      eventHandlers:
+        - event: NameRegistered(string,indexed bytes32,string)
+          handler: handleNameRegistered
+      file: ./src/subdomain-registrar.ts

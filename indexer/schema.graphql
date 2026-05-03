@@ -5,6 +5,16 @@ type Announcement @entity(immutable: true) {
   caller: Bytes! # address
   ephemeralPubKey: Bytes! # bytes
   metadata: Bytes! # bytes
+  viewTag: Int! # derived from metadata
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type Registration @entity(immutable: true) {
+  id: ID! # name
+  label: Bytes! # indexed label
+  stealthMetaAddress: String!
   blockNumber: BigInt!
   blockTimestamp: BigInt!
   transactionHash: Bytes!

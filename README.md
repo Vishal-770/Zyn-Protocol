@@ -12,12 +12,38 @@
 
 ---
 
-## 🏗️ Architecture (Zero-Link)
+---
 
-1.  **Identity**: You register `name.zyn.eth`. The registrar stores your "Stealth Meta-Address" on ENS.
-2.  **Payment**: A sender types `name.zyn.eth`. Their wallet fetches your Meta-Address and generates a **one-time stealth address**.
-3.  **Privacy**: The sender sends ETH to that address and posts a "clue" via the `EphemeralAnnouncer`.
-4.  **Recovery**: You scan the announcer events locally. Only your private viewing key can "unlock" the clue and reveal the payment.
+## 📖 Subdomain Registration Flow (Full Lifecycle)
+
+The registration of a Zyn subdomain is a carefully orchestrated process designed to break the link between your public identity and your private funds.
+
+### 1. Local Identity Generation (Frontend)
+The user's browser generates a pair of cryptographic keys (Spending & Viewing) from a signature. These are used to create the **Stealth Meta-Address**.
+*   **Why:** We generate these locally so your private keys **never touch a server**. The Meta-Address is the only thing the world sees; it's like a "public mailbox ID" that doesn't reveal who you are.
+
+### 2. The Availability Check
+The frontend calls `isAvailable(name)` on the `SubdomainRegistrar` contract.
+*   **Why:** Since ENS is a global namespace, we must ensure the name hasn't already been claimed. This check looks directly at the **ENS Registry** to see if the owner of that name is currently `address(0)`.
+
+### 3. The "Zero-Link" Registration (The Transaction)
+The user sends a transaction to `SubdomainRegistrar.register(name, metaAddress)`. This triggers two critical internal steps:
+
+#### A. Ownership Redirection (`setSubnodeRecord`)
+The contract tells the ENS Registry to create the subdomain and set the **Registrar Contract** as the owner.
+*   **Why:** If *you* were the owner, your wallet address would be permanently linked to your ENS name in the registry logs. By making the **contract** the owner, the trail ends there. Anyone looking at the registry just sees that the Zyn Registrar owns the name.
+
+#### B. Resolver Assignment
+The contract sets the name's resolver to the custom **`StealthResolver`**.
+*   **Why:** This tells the world: *"If you want to send money to this user, don't ask the standard ENS system; ask the Zyn CCIP-Read bridge instead."*
+
+### 4. Storage of the "Secret" Record (`setText`)
+The contract calls `officialResolver.setText(subnode, "stealth", metaAddress)`.
+*   **Why:** We store the meta-address on the **Official ENS Public Resolver** rather than a custom database. This ensures your data is as decentralized and permanent as any other ENS name.
+
+### 5. Event Emission (`NameRegistered`)
+The contract emits an event with the name and meta-address.
+*   **Why:** This allows the **Indexer (The Graph)** to pick up the registration instantly. While the ENS Registry is private, the protocol needs to index these registrations so users can see their active identities in the Dashboard.
 
 ---
 

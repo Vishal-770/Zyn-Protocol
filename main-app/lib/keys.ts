@@ -36,6 +36,23 @@ export function generateStealthKeypairs(): {
 }
 
 /**
+ * Derive the public Stealth Meta-Address from private keys
+ */
+export function computeStealthMetaAddress(
+  spendingPrivKey: Uint8Array,
+  viewingPrivKey: Uint8Array
+): string {
+  const spendingPubKey = secp.getPublicKey(spendingPrivKey, true);
+  const viewingPubKey = secp.getPublicKey(viewingPrivKey, true);
+
+  return (
+    "st:eth:0x" +
+    bytesToHex(spendingPubKey).slice(2) +
+    bytesToHex(viewingPubKey).slice(2)
+  );
+}
+
+/**
  * Derive an AES-GCM encryption key from a wallet signature using Web Crypto API.
  */
 async function deriveEncryptionKey(signature: string): Promise<CryptoKey> {

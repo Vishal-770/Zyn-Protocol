@@ -3,13 +3,64 @@ import { publicClient } from '../../../lib/ens';
 import { CONTRACTS } from '../../../lib/contracts';
 import { parseEventLogs, parseAbiItem } from 'viem';
 
-const DEPLOYMENT_BLOCK = BigInt(10770000); // Current Sepolia deployment block
-const CHUNK_SIZE = BigInt(10000); // 10,000 blocks per request is safe for Alchemy
+const DEPLOYMENT_BLOCK = BigInt(10770000); 
+const CHUNK_SIZE = BigInt(10000); 
+
+const SUBGRAPH_URL = process.env.SUBGRAPH_URL || process.env.NEXT_PUBLIC_SUBGRAPH_URL;
 
 export async function POST(req: Request) {
   try {
     const body = await req.json().catch(() => ({}));
     const latestBlock = await publicClient.getBlockNumber();
+    
+    // If subgraph is configured, use it for lightning fast retrieval
+    if (SUBGRAPH_URL) {
+      console.log("Querying subgraph for announcements...");
+      const query = `
+        {
+          announcements(first: 1000, orderBy: blockNumber, orderDirection: desc) {
+            id
+            schemeId
+            stealthAddress
+            caller
+            ephemeralPubKey
+            metadata
+            viewTag
+            blockNumber
+            transactionHash
+          }
+        }
+      `;
+
+      const response = await fetch(SUBGRAPH_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ query }),
+      });
+
+      const { data } = await response.json();
+      
+      if (data && data.announcements) {
+        const announcements = data.announcements.map((a: any) => ({
+          stealthAddress: a.stealthAddress,
+          ephemeralPubKey: a.ephemeralPubKey,
+          caller: a.caller,
+          viewTag: a.viewTag,
+          schemeId: Number(a.schemeId),
+          blockNumber: Number(a.blockNumber),
+          transactionHash: a.transactionHash,
+        }));
+
+        return NextResponse.json({
+          announcements,
+          latestBlock: Number(latestBlock),
+          indexed: true
+        });
+      }
+    }
+
+    // FALLBACK: Manual scan (original logic)
+    console.warn("Subgraph URL not found or query failed. Falling back to manual block scanning...");
     
     let fromBlock: bigint;
     if (body.fromBlock === 0 || body.fromBlock === "0") {
@@ -17,13 +68,10 @@ export async function POST(req: Request) {
     } else if (body.fromBlock) {
       fromBlock = BigInt(body.fromBlock);
     } else {
-      // Default to scanning from deployment block if no preference
       fromBlock = DEPLOYMENT_BLOCK;
     }
 
     if (fromBlock < DEPLOYMENT_BLOCK) fromBlock = DEPLOYMENT_BLOCK;
-
-    console.log(`Scanning from block ${fromBlock} to ${latestBlock}...`);
 
     let allLogs: any[] = [];
     let currentFromBlock = fromBlock;
@@ -42,8 +90,6 @@ export async function POST(req: Request) {
       currentFromBlock = toBlock + BigInt(1);
     }
 
-    console.log(`Found ${allLogs.length} raw announcement logs.`);
-
     const parsedLogs = parseEventLogs({
       abi: CONTRACTS.EPHEMERAL_ANNOUNCER.abi,
       logs: allLogs,
@@ -52,7 +98,6 @@ export async function POST(req: Request) {
 
     const announcements = parsedLogs.map((log: any) => {
       const metadataHex = log.args.metadata as string;
-      // View tag is the first byte after 0x
       const viewTag = metadataHex && metadataHex.length >= 4 
         ? parseInt(metadataHex.slice(2, 4), 16) 
         : 0;
@@ -71,6 +116,7 @@ export async function POST(req: Request) {
     return NextResponse.json({
       announcements,
       latestBlock: Number(latestBlock),
+      indexed: false
     });
 
   } catch (error: any) {

@@ -10,6 +10,13 @@ export function handleAnnouncement(event: AnnouncementEvent): void {
   entity.caller = event.params.caller
   entity.ephemeralPubKey = event.params.ephemeralPubKey
   entity.metadata = event.params.metadata
+  
+  // Extract viewTag from metadata (first byte)
+  if (event.params.metadata.length > 0) {
+    entity.viewTag = event.params.metadata[0]
+  } else {
+    entity.viewTag = 0
+  }
 
   entity.blockNumber = event.block.number
   entity.blockTimestamp = event.block.timestamp
