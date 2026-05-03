@@ -28,7 +28,7 @@ export function MarketingNavbar() {
           {[
             { name: "Features", href: "/#features" },
             { name: "Dashboard", href: "/dashboard" },
-            { name: "Docs", href: "#" }
+            { name: "Docs", href: "/docs" }
           ].map((item) => (
             <Link 
               key={item.name}
