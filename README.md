@@ -51,18 +51,127 @@ The contract emits an event with the name and meta-address.
 
 This section outlines the exact path a payment takes through the protocol, from discovery to withdrawal.
 
-<svg width="100%" viewBox="0 0 680 1580" role="img" xmlns="http://www.w3.org/2000/svg">
-  <title style="fill:rgb(0, 0, 0);stroke:none;color:rgb(255, 255, 255);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto">Zyn payment lifecycle technical flowchart</title>
-  <desc style="fill:rgb(0, 0, 0);stroke:none;color:rgb(255, 255, 255);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto">Four-phase flowchart covering recipient setup, sender discovery and math, the stealth handshake execution, and recipient discovery and sweep.</desc>
-  <defs>
-    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
-      <path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-    </marker>
-  <mask id="imagine-text-gaps-snhmfx" maskUnits="userSpaceOnUse"><rect x="0" y="0" width="680" height="1580" fill="white"/><rect x="243.07501220703125" y="27.4666690826416" width="193.85000610351562" height="22.13333511352539" fill="black" rx="2"/><rect x="285.9416809082031" y="85.4666748046875" width="109.2440185546875" height="22.13333511352539" fill="black" rx="2"/><rect x="102.47500610351562" y="106.53334045410156" width="475.286865234375" height="18.933334350585938" fill="black" rx="2"/><rect x="238.95834350585938" y="123.53334045410156" width="203.386474609375" height="18.933334350585938" fill="black" rx="2"/><rect x="301.6750183105469" y="66.13333892822266" width="77.32464599609375" height="15.733333587646484" fill="black" rx="2"/><rect x="264.808349609375" y="191.4666748046875" width="150.4473114013672" height="22.13333511352539" fill="black" rx="2"/><rect x="115.90834045410156" y="212.53334045410156" width="447.425537109375" height="18.933334350585938" fill="black" rx="2"/><rect x="239.1416778564453" y="229.53334045410156" width="201.1377716064453" height="18.933334350585938" fill="black" rx="2"/><rect x="277.7083435058594" y="297.4666748046875" width="124.92109680175781" height="22.13333511352539" fill="black" rx="2"/><rect x="112.92500305175781" y="318.5333557128906" width="455.7267761230469" height="18.933334350585938" fill="black" rx="2"/><rect x="195.36668395996094" y="335.5333557128906" width="288.4976806640625" height="18.933334350585938" fill="black" rx="2"/><rect x="264.54168701171875" y="370.5333557128906" width="150.15586853027344" height="18.933334350585938" fill="black" rx="2"/><rect x="210.4666748046875" y="411.4666748046875" width="259.0666809082031" height="22.13333511352539" fill="black" rx="2"/><rect x="286.5250244140625" y="469.4667053222656" width="108.08242797851562" height="21.066667556762695" fill="black" rx="2"/><rect x="73.7750015258789" y="490.5333557128906" width="533.7521362304688" height="18.933334350585938" fill="black" rx="2"/><rect x="242.8583526611328" y="507.5333557128906" width="194.51113891601562" height="18.933334350585938" fill="black" rx="2"/><rect x="245.308349609375" y="575.4666748046875" width="189.4434356689453" height="22.13333511352539" fill="black" rx="2"/><rect x="118.01667022705078" y="596.5333862304688" width="443.36956787109375" height="18.933334350585938" fill="black" rx="2"/><rect x="231.99168395996094" y="613.5333862304688" width="216.2490997314453" height="18.933334350585938" fill="black" rx="2"/><rect x="284.308349609375" y="648.5333862304688" width="112.67259979248047" height="18.933334350585938" fill="black" rx="2"/><rect x="176.08334350585938" y="689.4666748046875" width="327.8333435058594" height="22.13333511352539" fill="black" rx="2"/><rect x="138.65834045410156" y="751.4667358398438" width="107.32451629638672" height="21.066667556762695" fill="black" rx="2"/><rect x="139.27500915527344" y="774.5333862304688" width="107.12723541259766" height="18.933334350585938" fill="black" rx="2"/><rect x="134.5500030517578" y="792.5333862304688" width="115.13121032714844" height="18.933334350585938" fill="black" rx="2"/><rect x="140.8416748046875" y="814.5333862304688" width="103.1079330444336" height="18.933334350585938" fill="black" rx="2"/><rect x="139.2583465576172" y="832.5333862304688" width="107.20523071289062" height="18.933334350585938" fill="black" rx="2"/><rect x="405.8000183105469" y="751.4667358398438" width="165.8742218017578" height="22.13333511352539" fill="black" rx="2"/><rect x="428.54168701171875" y="774.5333862304688" width="119.21524047851562" height="18.933334350585938" fill="black" rx="2"/><rect x="442.57501220703125" y="792.5333862304688" width="90.28190612792969" height="18.933334350585938" fill="black" rx="2"/><rect x="432.72503662109375" y="810.5333862304688" width="112.1312255859375" height="18.933334350585938" fill="black" rx="2"/><rect x="416.2750244140625" y="828.5333862304688" width="144.74252319335938" height="18.933334350585938" fill="black" rx="2"/><rect x="283.5333557128906" y="943.4667358398438" width="113.33438110351562" height="21.066667556762695" fill="black" rx="2"/><rect x="72.36666870117188" y="964.5333862304688" width="534.6893310546875" height="18.933334350585938" fill="black" rx="2"/><rect x="229.92501831054688" y="981.5333862304688" width="221.72715759277344" height="18.933334350585938" fill="black" rx="2"/><rect x="268.1583557128906" y="1016.5333862304688" width="144.9824981689453" height="18.933334350585938" fill="black" rx="2"/><rect x="197.4666748046875" y="1057.4666748046875" width="285.0666809082031" height="22.13333511352539" fill="black" rx="2"/><rect x="282.4750061035156" y="1115.4666748046875" width="116.5281982421875" height="22.13333511352539" fill="black" rx="2"/><rect x="118.62500762939453" y="1136.533447265625" width="442.9208679199219" height="18.933334350585938" fill="black" rx="2"/><rect x="233.5083465576172" y="1153.533447265625" width="214.28250122070312" height="18.933334350585938" fill="black" rx="2"/><rect x="280.9750061035156" y="1221.4666748046875" width="119.53704833984375" height="22.13333511352539" fill="black" rx="2"/><rect x="105.30834197998047" y="1242.533447265625" width="470.68017578125" height="18.933334350585938" fill="black" rx="2"/><rect x="206.683349609375" y="1259.533447265625" width="266.8591003417969" height="18.933334350585938" fill="black" rx="2"/><rect x="258.4250183105469" y="1327.466796875" width="163.9770965576172" height="22.13333511352539" fill="black" rx="2"/><rect x="116.87500762939453" y="1348.533447265625" width="445.4875183105469" height="18.933334350585938" fill="black" rx="2"/><rect x="241.65000915527344" y="1365.533447265625" width="196.7178497314453" height="18.933334350585938" fill="black" rx="2"/><rect x="-4.019995117560029" y="98.53334045410156" width="62.24528121948242" height="18.933334350585938" fill="black" rx="2"/><rect x="-1.8699951171875" y="204.53334045410156" width="60.095951080322266" height="18.933334350585938" fill="black" rx="2"/><rect x="25.746673583984375" y="310.5333557128906" width="33.65131950378418" height="18.933334350585938" fill="black" rx="2"/><rect x="8.463338851928711" y="482.5333557128906" width="49.96198272705078" height="18.933334350585938" fill="black" rx="2"/><rect x="8.463338851928711" y="588.5333862304688" width="49.96198272705078" height="18.933334350585938" fill="black" rx="2"/><rect x="8.463338851928711" y="794.5333862304688" width="49.96198272705078" height="18.933334350585938" fill="black" rx="2"/><rect x="15.813339233398438" y="956.5333862304688" width="42.41730499267578" height="18.933334350585938" fill="black" rx="2"/><rect x="7.430005073547363" y="1128.533447265625" width="50.98930740356445" height="18.933334350585938" fill="black" rx="2"/><rect x="-4.019995117560029" y="1234.533447265625" width="62.24528121948242" height="18.933334350585938" fill="black" rx="2"/><rect x="-4.019995117560029" y="1340.533447265625" width="62.24528121948242" height="18.933334350585938" fill="black" rx="2"/><rect x="166.72500610351562" y="1436.533447265625" width="345.7916259765625" height="18.933334350585938" fill="black" rx="2"/></mask></defs>
+<svg width="100%" viewBox="0 0 680 1580" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background Group -->
+  <g fill="none" stroke="none">
+    <rect width="680" height="1580" fill="transparent"/>
+  </g>
+
+  <!-- Phase 1 — Setup (Recipient) -->
+  <g>
+    <rect x="60" y="24" width="560" height="28" rx="7" fill="#3C3489" stroke="#AFA9EC" stroke-width="0.5" opacity="0.65"/>
+    <text x="340" y="43" text-anchor="middle" font-size="14" fill="#CECBE6" font-family="sans-serif" font-weight="500">Phase 1 — Setup (Recipient)</text>
+  </g>
+
+  <!-- 1A -->
+  <g>
+    <rect x="60" y="72" width="560" height="72" rx="10" fill="#3C3489" stroke="#AFA9EC" stroke-width="0.5"/>
+    <text x="340" y="100" text-anchor="middle" font-size="14" fill="#CECBE6" font-family="sans-serif" font-weight="500">Key generation</text>
+    <text x="340" y="120" text-anchor="middle" font-size="12" fill="#AFA9EC" font-family="sans-serif">Signature-derived entropy → Spending &amp; Viewing keypairs → Stealth Meta-Address</text>
+    <text x="340" y="137" text-anchor="middle" font-size="12" fill="#AFA9EC" font-family="sans-serif" opacity="0.55">keys.ts → generateStealthKeypairs</text>
+  </g>
+
+  <!-- 1B -->
+  <g>
+    <rect x="60" y="178" width="560" height="72" rx="10" fill="#3C3489" stroke="#AFA9EC" stroke-width="0.5"/>
+    <text x="340" y="206" text-anchor="middle" font-size="14" fill="#CECBE6" font-family="sans-serif" font-weight="500">Zero-link registration</text>
+    <text x="340" y="226" text-anchor="middle" font-size="12" fill="#AFA9EC" font-family="sans-serif">alice.zyn.eth registered — Registrar contract set as ENS owner, not user wallet</text>
+    <text x="340" y="243" text-anchor="middle" font-size="12" fill="#AFA9EC" font-family="sans-serif" opacity="0.55">SubdomainRegistrar.sol → register</text>
+  </g>
+
+  <!-- 1C -->
+  <g>
+    <rect x="60" y="284" width="560" height="72" rx="10" fill="#3C3489" stroke="#AFA9EC" stroke-width="0.5"/>
+    <text x="340" y="312" text-anchor="middle" font-size="14" fill="#CECBE6" font-family="sans-serif" font-weight="500">Standard storage</text>
+    <text x="340" y="332" text-anchor="middle" font-size="12" fill="#AFA9EC" font-family="sans-serif">Meta-address stored via officialResolver.setText → permanent, ENS-compatible</text>
+    <text x="340" y="349" text-anchor="middle" font-size="12" fill="#AFA9EC" font-family="sans-serif" opacity="0.55">SubdomainRegistrar.sol → officialResolver.setText</text>
+  </g>
+
+  <!-- Phase 2 — Discovery & Math (Sender) -->
+  <g>
+    <rect x="60" y="408" width="560" height="28" rx="7" fill="#085041" stroke="#5DCAA5" stroke-width="0.5" opacity="0.65"/>
+    <text x="340" y="427" text-anchor="middle" font-size="14" fill="#9FE1CB" font-family="sans-serif" font-weight="500">Phase 2 — Discovery &amp; Math (Sender)</text>
+  </g>
+
+  <!-- 2A -->
+  <g>
+    <rect x="60" y="456" width="560" height="72" rx="10" fill="#085041" stroke="#5DCAA5" stroke-width="0.5"/>
+    <text x="340" y="484" text-anchor="middle" font-size="14" fill="#9FE1CB" font-family="sans-serif" font-weight="500">ENS resolution</text>
+    <text x="340" y="504" text-anchor="middle" font-size="12" fill="#5DCAA5" font-family="sans-serif">Fetch meta-address from alice.zyn.eth — retrieves recipient's keys</text>
+    <text x="340" y="521" text-anchor="middle" font-size="12" fill="#5DCAA5" font-family="sans-serif" opacity="0.55">ens.ts → getStealthMetaAddress</text>
+  </g>
+
+  <!-- 2B -->
+  <g>
+    <rect x="60" y="562" width="560" height="72" rx="10" fill="#085041" stroke="#5DCAA5" stroke-width="0.5"/>
+    <text x="340" y="590" text-anchor="middle" font-size="14" fill="#9FE1CB" font-family="sans-serif" font-weight="500">Stealth address generation</text>
+    <text x="340" y="610" text-anchor="middle" font-size="12" fill="#5DCAA5" font-family="sans-serif">Compute one-time Stealth Address (0xABC…) + Ephemeral Public Key (clue)</text>
+    <text x="340" y="627" text-anchor="middle" font-size="12" fill="#5DCAA5" font-family="sans-serif" opacity="0.55">stealth.ts → generateStealthAddress</text>
+  </g>
+
+  <!-- Phase 3 — Execution & Privacy -->
+  <g>
+    <rect x="60" y="686" width="560" height="28" rx="7" fill="#712B13" stroke="#F0997B" stroke-width="0.5" opacity="0.65"/>
+    <text x="340" y="705" text-anchor="middle" font-size="14" fill="#F5C4B3" font-family="sans-serif" font-weight="500">Phase 3 — Execution &amp; Privacy (The Handshake)</text>
+  </g>
+
+  <!-- 3A -->
+  <g>
+    <rect x="60" y="734" width="264" height="140" rx="10" fill="#712B13" stroke="#F0997B" stroke-width="0.5"/>
+    <text x="192" y="770" text-anchor="middle" font-size="14" fill="#F5C4B3" font-family="sans-serif" font-weight="500">Direct transfer</text>
+    <text x="192" y="790" text-anchor="middle" font-size="12" fill="#F0997B" font-family="sans-serif">ETH sent directly to Stealth Address</text>
+    <text x="192" y="810" text-anchor="middle" font-size="12" fill="#F0997B" font-family="sans-serif">Fresh address — no link</text>
+  </g>
+
+  <!-- 3B -->
+  <g>
+    <rect x="356" y="734" width="264" height="140" rx="10" fill="#712B13" stroke="#F0997B" stroke-width="0.5"/>
+    <text x="488" y="770" text-anchor="middle" font-size="14" fill="#F5C4B3" font-family="sans-serif" font-weight="500">Relayed announcement</text>
+    <text x="488" y="790" text-anchor="middle" font-size="12" fill="#F0997B" font-family="sans-serif">Ephemeral key sent to Zyn Relayer</text>
+    <text x="488" y="810" text-anchor="middle" font-size="12" fill="#F0997B" font-family="sans-serif">Relayer posts clue to chain</text>
+  </g>
+
+  <!-- 3C -->
+  <g>
+    <rect x="60" y="930" width="560" height="72" rx="10" fill="#712B13" stroke="#F0997B" stroke-width="0.5"/>
+    <text x="340" y="958" text-anchor="middle" font-size="14" fill="#F5C4B3" font-family="sans-serif" font-weight="500">Stateless event</text>
+    <text x="340" y="978" text-anchor="middle" font-size="12" fill="#F0997B" font-family="sans-serif">Announcement emitted on-chain — no state written</text>
+    <text x="340" y="995" text-anchor="middle" font-size="12" fill="#F0997B" font-family="sans-serif" opacity="0.55">EphemeralAnnouncer.sol → announce</text>
+  </g>
+
+  <!-- Phase 4 — Discovery & Sweep -->
+  <g>
+    <rect x="60" y="1054" width="560" height="28" rx="7" fill="#27500A" stroke="#97C459" stroke-width="0.5" opacity="0.65"/>
+    <text x="340" y="1073" text-anchor="middle" font-size="14" fill="#C0DD97" font-family="sans-serif" font-weight="500">Phase 4 — Discovery &amp; Sweep (Recipient)</text>
+  </g>
+
+  <!-- 4A -->
+  <g>
+    <rect x="60" y="1102" width="560" height="72" rx="10" fill="#27500A" stroke="#97C459" stroke-width="0.5"/>
+    <text x="340" y="1130" text-anchor="middle" font-size="14" fill="#C0DD97" font-family="sans-serif" font-weight="500">Instant indexing</text>
+    <text x="340" y="1150" text-anchor="middle" font-size="12" fill="#97C459" font-family="sans-serif">The Graph picks up Announcement for filtered retrieval</text>
+    <text x="340" y="1167" text-anchor="middle" font-size="12" fill="#97C459" font-family="sans-serif" opacity="0.55">indexer/src/ephemeral-announcer.ts</text>
+  </g>
+
+  <!-- 4B -->
+  <g>
+    <rect x="60" y="1208" width="560" height="72" rx="10" fill="#27500A" stroke="#97C459" stroke-width="0.5"/>
+    <text x="340" y="1236" text-anchor="middle" font-size="14" fill="#C0DD97" font-family="sans-serif" font-weight="500">Private scanning</text>
+    <text x="340" y="1256" text-anchor="middle" font-size="12" fill="#97C459" font-family="sans-serif">Browser queries Indexer + applies Viewing Key locally</text>
+    <text x="340" y="1273" text-anchor="middle" font-size="12" fill="#97C459" font-family="sans-serif" opacity="0.55">SweepDashboard.tsx → checkStealthAddress</text>
+  </g>
+
+  <!-- 4C -->
+  <g>
+    <rect x="60" y="1314" width="560" height="72" rx="10" fill="#27500A" stroke="#97C459" stroke-width="0.5"/>
+    <text x="340" y="1342" text-anchor="middle" font-size="14" fill="#C0DD97" font-family="sans-serif" font-weight="500">Key derivation &amp; sweep</text>
+    <text x="340" y="1362" text-anchor="middle" font-size="12" fill="#97C459" font-family="sans-serif">Spending key + clue → one-time private key derived → funds swept</text>
+    <text x="340" y="1379" text-anchor="middle" font-size="12" fill="#97C459" font-family="sans-serif" opacity="0.55">SweepDashboard.tsx → onSweep</text>
+  </g>
 
   <!-- Legend -->
   <rect x="60" y="1424" width="560" height="40" rx="8" fill="none" stroke="#DEDCD1" stroke-width="0.5" stroke-dasharray="4 3" opacity="0.4"/>
-  <text x="340" y="1446" text-anchor="middle" dominant-baseline="central" font-size="12" fill="#C2C0B6" opacity="0.5">Zyn Protocol Technical Flowchart</text>
+  <text x="340" y="1449" text-anchor="middle" font-size="12" fill="#C2C0B6" font-family="sans-serif" opacity="0.5">Zyn Protocol Technical Flowchart</text>
 </svg>
 
 
