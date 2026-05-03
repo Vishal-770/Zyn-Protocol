@@ -16,6 +16,8 @@
 
 ## 📖 Subdomain Registration Flow (Full Lifecycle)
 
+![Zyn Subdomain Registration Flow](./zyn_subdomain_registration_flow.svg)
+
 The registration of a Zyn subdomain is a carefully orchestrated process designed to break the link between your public identity and your private funds.
 
 ### 1. Local Identity Generation (Frontend)
