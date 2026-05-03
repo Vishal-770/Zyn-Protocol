@@ -162,9 +162,9 @@ export function SweepDashboard() {
     <div className="w-full space-y-6 animate-in fade-in duration-700">
       {/* Dashboard Header */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 border-b border-border/40 pb-6">
-        <div>
-          <h1 className="text-4xl font-black tracking-tight uppercase italic">Scanner</h1>
-          <p className="text-muted-foreground mt-1 font-bold text-xs tracking-widest uppercase opacity-50">
+        <div className="space-y-1">
+          <h1 className="text-3xl sm:text-4xl font-black tracking-tight uppercase italic">Scanner</h1>
+          <p className="text-muted-foreground font-bold text-[10px] sm:text-xs tracking-widest uppercase opacity-50">
             Zyn Protocol • Sepolia Testnet
           </p>
         </div>
@@ -172,7 +172,7 @@ export function SweepDashboard() {
         <Button 
           onClick={handleScan} 
           disabled={isScanning}
-          className="rounded-none h-14 px-8 font-black uppercase tracking-wider text-xs border-2 border-primary bg-primary text-primary-foreground hover:bg-transparent hover:text-primary transition-all"
+          className="w-full sm:w-auto rounded-none h-14 px-8 font-black uppercase tracking-wider text-[10px] sm:text-xs border-2 border-primary bg-primary text-primary-foreground hover:bg-transparent hover:text-primary transition-all"
         >
           {isScanning ? (
             <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> {scanStep || "Scanning..."}</>
@@ -183,75 +183,124 @@ export function SweepDashboard() {
       </div>
 
       {/* Transaction Feed */}
-      <div className="w-full space-y-4">
+      <div className="w-full space-y-6">
         <div className="flex items-center gap-3 border-b border-border/40 pb-4">
           <Inbox className="w-4 h-4 text-muted-foreground" />
-          <span className="text-[10px] font-black uppercase tracking-[0.3em] text-muted-foreground">Detected Unswept Deposits</span>
+          <span className="text-[9px] sm:text-[10px] font-black uppercase tracking-[0.2em] sm:tracking-[0.3em] text-muted-foreground">Detected Unswept Deposits</span>
         </div>
         
         <div className="w-full">
           {isScanning ? (
             <div className="space-y-4">
-              <Skeleton className="h-14 w-full bg-muted/20" />
-              <Skeleton className="h-14 w-full bg-muted/20" />
+              <Skeleton className="h-16 w-full bg-muted/20" />
+              <Skeleton className="h-16 w-full bg-muted/20" />
             </div>
           ) : matches.length > 0 ? (
-            <div className="overflow-x-auto w-full">
-              <table className="w-full text-left border-collapse">
-                <thead>
-                  <tr className="bg-muted/10 text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/40 border-b border-border/20">
-                    <th className="px-4 py-5">Stealth Instance</th>
-                    <th className="px-4 py-5">Liquidity</th>
-                    <th className="px-4 py-5">Status</th>
-                    <th className="px-4 py-5">Origin</th>
-                    <th className="px-4 py-5 text-right">Command</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-border/20">
-                  {matches.map((match) => (
-                    <tr key={match.address} className="hover:bg-primary/[0.02] transition-colors">
-                      <td className="px-4 py-6">
-                        <div className="flex items-center gap-4">
-                          <div className="w-2 h-2 rounded-full bg-primary" />
-                          <p className="text-xs font-mono font-bold tracking-tight text-muted-foreground uppercase">{match.address.slice(0, 18)}...</p>
-                        </div>
-                      </td>
-                      <td className="px-4 py-6">
-                        <p className="text-sm font-black italic text-success">{match.balance} ETH</p>
-                      </td>
-                      <td className="px-4 py-6">
-                        <span className="text-[10px] font-black uppercase tracking-widest text-primary flex items-center gap-2">
+            <div className="w-full space-y-4">
+              {/* Mobile Card Layout */}
+              <div className="grid grid-cols-1 gap-4 lg:hidden">
+                {matches.map((match) => (
+                  <div key={match.address} className="p-5 bg-muted/10 border border-border/40 space-y-5">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <div className="w-2 h-2 rounded-full bg-primary" />
+                        <p className="text-[10px] font-mono font-bold tracking-tight text-muted-foreground uppercase">{match.address.slice(0, 10)}...{match.address.slice(-6)}</p>
+                      </div>
+                      <a 
+                        href={`https://sepolia.etherscan.io/tx/${match.txHash}`} 
+                        target="_blank" 
+                        className="p-2 -mr-2 text-muted-foreground/60 hover:text-primary"
+                      >
+                        <ExternalLink className="w-4 h-4" />
+                      </a>
+                    </div>
+                    
+                    <div className="flex justify-between items-end">
+                      <div className="space-y-1">
+                        <p className="text-[9px] font-black uppercase tracking-widest text-muted-foreground/40">Liquidity</p>
+                        <p className="text-xl font-black italic text-success">{match.balance} ETH</p>
+                      </div>
+                      <div className="text-right space-y-1">
+                        <p className="text-[9px] font-black uppercase tracking-widest text-muted-foreground/40">Status</p>
+                        <span className="text-[9px] font-black uppercase tracking-widest text-primary flex items-center gap-1.5 justify-end">
                           <Clock className="w-3 h-3" /> Ready
                         </span>
-                      </td>
-                      <td className="px-4 py-6">
-                        <a 
-                          href={`https://sepolia.etherscan.io/tx/${match.txHash}`} 
-                          target="_blank" 
-                          className="text-[10px] font-bold text-muted-foreground/60 uppercase hover:text-primary transition-colors flex items-center gap-1"
-                        >
-                          View Tx <ExternalLink className="w-3 h-3" />
-                        </a>
-                      </td>
-                      <td className="px-4 py-6 text-right">
-                        <Button 
-                          onClick={() => handleSweep(match)}
-                          disabled={!!isSweeping}
-                          variant="ghost" 
-                          size="sm" 
-                          className="h-9 px-6 rounded-none font-black text-[10px] uppercase border border-primary text-primary hover:bg-primary hover:text-primary-foreground transition-all"
-                        >
-                          {isSweeping === match.address ? (
-                            <Loader2 className="w-3 h-3 animate-spin" />
-                          ) : (
-                            <><ArrowUpRight className="w-3 h-3 mr-2" /> Recover to Wallet</>
-                          )}
-                        </Button>
-                      </td>
+                      </div>
+                    </div>
+
+                    <Button 
+                      onClick={() => handleSweep(match)}
+                      disabled={!!isSweeping}
+                      className="w-full h-12 rounded-none font-black text-[10px] uppercase border border-primary bg-primary text-primary-foreground hover:bg-transparent hover:text-primary transition-all"
+                    >
+                      {isSweeping === match.address ? (
+                        <Loader2 className="w-4 h-4 animate-spin" />
+                      ) : (
+                        <><ArrowUpRight className="w-4 h-4 mr-2" /> Recover to Wallet</>
+                      )}
+                    </Button>
+                  </div>
+                ))}
+              </div>
+
+              {/* Desktop Table Layout */}
+              <div className="hidden lg:block overflow-x-auto w-full">
+                <table className="w-full text-left border-collapse">
+                  <thead>
+                    <tr className="bg-muted/10 text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/40 border-b border-border/20">
+                      <th className="px-4 py-5">Stealth Instance</th>
+                      <th className="px-4 py-5">Liquidity</th>
+                      <th className="px-4 py-5">Status</th>
+                      <th className="px-4 py-5">Origin</th>
+                      <th className="px-4 py-5 text-right">Command</th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody className="divide-y divide-border/20">
+                    {matches.map((match) => (
+                      <tr key={match.address} className="hover:bg-primary/[0.02] transition-colors">
+                        <td className="px-4 py-6">
+                          <div className="flex items-center gap-4">
+                            <div className="w-2 h-2 rounded-full bg-primary" />
+                            <p className="text-xs font-mono font-bold tracking-tight text-muted-foreground uppercase">{match.address.slice(0, 18)}...</p>
+                          </div>
+                        </td>
+                        <td className="px-4 py-6">
+                          <p className="text-sm font-black italic text-success">{match.balance} ETH</p>
+                        </td>
+                        <td className="px-4 py-6">
+                          <span className="text-[10px] font-black uppercase tracking-widest text-primary flex items-center gap-2">
+                            <Clock className="w-3 h-3" /> Ready
+                          </span>
+                        </td>
+                        <td className="px-4 py-6">
+                          <a 
+                            href={`https://sepolia.etherscan.io/tx/${match.txHash}`} 
+                            target="_blank" 
+                            className="text-[10px] font-bold text-muted-foreground/60 uppercase hover:text-primary transition-colors flex items-center gap-1"
+                          >
+                            View Tx <ExternalLink className="w-3 h-3" />
+                          </a>
+                        </td>
+                        <td className="px-4 py-6 text-right">
+                          <Button 
+                            onClick={() => handleSweep(match)}
+                            disabled={!!isSweeping}
+                            variant="ghost" 
+                            size="sm" 
+                            className="h-9 px-6 rounded-none font-black text-[10px] uppercase border border-primary text-primary hover:bg-primary hover:text-primary-foreground transition-all"
+                          >
+                            {isSweeping === match.address ? (
+                              <Loader2 className="w-3 h-3 animate-spin" />
+                            ) : (
+                              <><ArrowUpRight className="w-3 h-3 mr-2" /> Recover to Wallet</>
+                            )}
+                          </Button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
             </div>
           ) : (
             <div className="py-24 flex flex-col items-center space-y-6">
