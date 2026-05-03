@@ -1,0 +1,26 @@
+specVersion: 1.3.0
+indexerHints:
+  prune: auto
+schema:
+  file: ./schema.graphql
+dataSources:
+  - kind: ethereum
+    name: EphemeralAnnouncer
+    network: sepolia
+    source:
+      address: "0xA7859177a0EB625a8E5D5e36291EbD1e081De84E"
+      abi: EphemeralAnnouncer
+      startBlock: 10777360
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.9
+      language: wasm/assemblyscript
+      entities:
+        - Announcement
+      abis:
+        - name: EphemeralAnnouncer
+          file: ./abis/EphemeralAnnouncer.json
+      eventHandlers:
+        - event: Announcement(indexed uint256,indexed address,indexed address,bytes,bytes)
+          handler: handleAnnouncement
+      file: ./src/ephemeral-announcer.ts

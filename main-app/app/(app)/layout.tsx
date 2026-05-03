@@ -99,9 +99,9 @@ export default function AppLayout({
           <WalletConnect />
         </header>
 
-        {/* Main Content Area - Full Width Edge-to-Edge */}
+        {/* Main Content Area - Professional Gutter Padding */}
         <main className="flex-1 overflow-y-auto bg-muted/10 w-full">
-          <div className="w-full p-4 sm:p-8 animate-in fade-in slide-in-from-bottom-4 duration-1000">
+          <div className="w-full px-8 sm:px-12 lg:px-16 py-8 animate-in fade-in duration-500">
             {children}
           </div>
         </main>

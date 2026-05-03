@@ -1,0 +1,8 @@
+{
+  "sepolia": {
+    "EphemeralAnnouncer": {
+      "address": "0xA7859177a0EB625a8E5D5e36291EbD1e081De84E",
+      "startBlock": 10777360
+    }
+  }
+}

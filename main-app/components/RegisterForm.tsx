@@ -7,9 +7,8 @@ import { generateStealthKeypairs, saveKeys, ENCRYPTION_MESSAGE } from '@/lib/key
 import { CONTRACTS } from '@/lib/contracts'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import { Label } from '@/components/ui/label'
-import { Loader2, CheckCircle2, XCircle, Shield, Key, Fingerprint, Wallet } from 'lucide-react'
+import { Loader2, CheckCircle2, XCircle, Shield, Key, Fingerprint, Wallet, ArrowRight } from 'lucide-react'
 import { toast } from 'sonner'
 import { 
   Dialog, 
@@ -30,7 +29,7 @@ export function RegisterForm({ onSuccess }: { onSuccess: (name: string) => void 
   const { signMessageAsync } = useSignMessage()
   const { writeContractAsync } = useWriteContract()
   const [txHash, setTxHash] = useState<`0x${string}` | null>(null)
-  const { isSuccess: isTxConfirmed, isLoading: isTxWaiting } = useWaitForTransactionReceipt({ hash: txHash || undefined })
+  const { isSuccess: isTxConfirmed } = useWaitForTransactionReceipt({ hash: txHash || undefined })
 
   const isValid = name.length >= 3 && /^[a-z0-9-]+$/.test(name) && !name.startsWith('-') && !name.endsWith('-')
 
@@ -92,82 +91,92 @@ export function RegisterForm({ onSuccess }: { onSuccess: (name: string) => void 
 
   return (
     <>
-      <Card className="w-full max-w-md mx-auto shadow-xl border-border bg-card/50 backdrop-blur-sm">
-        <CardHeader>
-          <CardTitle className="text-2xl font-bold tracking-tight">Claim your handle</CardTitle>
-          <CardDescription>Your privacy-first identity on the Zyn Protocol.</CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-6">
-          <div className="space-y-2">
-            <Label htmlFor="name" className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Username</Label>
-            <div className="relative flex items-center group">
-              <Input
-                id="name"
-                placeholder="alice"
-                value={name}
-                onChange={(e) => setName(e.target.value.toLowerCase())}
-                className="pr-[110px] h-12 font-medium bg-background/50 focus-visible:ring-primary/20"
-                autoComplete="off"
-              />
-              <span className="absolute right-4 text-muted-foreground font-medium pointer-events-none select-none">
-                .zyn.eth
-              </span>
+      <div className="w-full space-y-12 animate-in fade-in duration-700">
+        <div className="space-y-10">
+          <div className="space-y-6">
+            <div className="flex items-center gap-3">
+              <div className="w-1 h-4 bg-primary rounded-full" />
+              <Label htmlFor="name" className="text-xs font-black uppercase tracking-[0.4em] text-primary/60">Desired Handle</Label>
             </div>
             
-            {name.length > 0 && (
-              <div className="text-sm px-1 flex items-center gap-2">
-                {!isValid ? (
-                  <span className="text-destructive flex items-center gap-1.5">
-                    <XCircle className="w-4 h-4" /> Invalid characters
-                  </span>
-                ) : isChecking ? (
-                  <span className="text-muted-foreground flex items-center gap-1.5">
-                    <Loader2 className="w-4 h-4 animate-spin" /> Checking...
-                  </span>
-                ) : isAvailable === true ? (
-                  <span className="text-success flex items-center gap-1.5">
-                    <CheckCircle2 className="w-4 h-4" /> Available for registration
-                  </span>
-                ) : isAvailable === false ? (
-                  <span className="text-destructive flex items-center gap-1.5">
-                    <XCircle className="w-4 h-4" /> This name is already taken
-                  </span>
-                ) : null}
+            <div className="group w-full max-w-2xl">
+              <div className="flex items-baseline gap-2 border-b-2 border-border/40 focus-within:border-primary transition-all pb-2">
+                <input
+                  id="name"
+                  placeholder="IDENTIFIER"
+                  value={name}
+                  onChange={(e) => setName(e.target.value.toLowerCase())}
+                  className="bg-transparent border-none p-0 focus:ring-0 text-3xl sm:text-4xl font-black uppercase tracking-tighter italic placeholder:opacity-10 w-full outline-none"
+                  autoComplete="off"
+                />
+                <span className="text-xl sm:text-2xl font-black italic uppercase text-muted-foreground/30 group-focus-within:text-primary transition-colors">
+                  .zyn.eth
+                </span>
               </div>
-            )}
+            </div>
+            
+            <div className="h-8">
+              {name.length > 0 && (
+                <div className="text-[11px] px-1 flex items-center gap-3 font-black uppercase tracking-widest italic">
+                  {!isValid ? (
+                    <span className="text-destructive flex items-center gap-2">
+                      <XCircle className="w-4 h-4" /> Syntax Rejection
+                    </span>
+                  ) : isChecking ? (
+                    <span className="text-muted-foreground flex items-center gap-2 animate-pulse">
+                      <Loader2 className="w-4 h-4 animate-spin" /> Verifying Node Availability...
+                    </span>
+                  ) : isAvailable === true ? (
+                    <span className="text-success flex items-center gap-2">
+                      <CheckCircle2 className="w-4 h-4" /> Identifier Available
+                    </span>
+                  ) : isAvailable === false ? (
+                    <span className="text-destructive flex items-center gap-2">
+                      <XCircle className="w-4 h-4" /> Identifier Conflict
+                    </span>
+                  ) : null}
+                </div>
+              )}
+            </div>
           </div>
-        </CardContent>
-        <CardFooter>
-          <Button 
-            className="w-full font-bold h-12 transition-all active:scale-[0.98]" 
-            size="lg"
-            disabled={!address || !isValid || isAvailable !== true || step !== ''}
-            onClick={handleRegister}
-          >
-            {!address ? 'Connect Wallet' : 'Register Name'}
-          </Button>
-        </CardFooter>
-      </Card>
+
+          <div className="pt-6">
+            <Button 
+              className="group h-16 px-12 font-black uppercase tracking-[0.3em] text-xs bg-foreground text-background hover:bg-primary hover:text-primary-foreground transition-all rounded-none overflow-hidden relative" 
+              disabled={!address || !isValid || isAvailable !== true || step !== ''}
+              onClick={handleRegister}
+            >
+              <span className="relative z-10 flex items-center gap-3">
+                {!address ? 'Connect Wallet First' : 'Confirm Registration'}
+                <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-2" />
+              </span>
+            </Button>
+            <p className="mt-4 text-[10px] font-bold text-muted-foreground/50 uppercase tracking-widest">
+              Standard gas fees apply on Sepolia Network
+            </p>
+          </div>
+        </div>
+      </div>
 
       <Dialog open={step !== ''} onOpenChange={() => {}}>
-        <DialogContent className="sm:max-w-md pointer-events-none">
+        <DialogContent className="sm:max-w-md border-border/40 bg-background/95 backdrop-blur-xl rounded-none">
           <DialogHeader className="items-center text-center">
-            <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mb-4 text-primary">
+            <div className="w-16 h-16 rounded-none bg-primary/10 flex items-center justify-center mb-6 text-primary border border-primary/20">
               {step === 'Generating keys...' && <Fingerprint className="w-8 h-8 animate-pulse" />}
               {step === 'Encrypting keys...' && <Key className="w-8 h-8 animate-bounce" />}
               {step === 'Waiting for wallet...' && <Wallet className="w-8 h-8 animate-pulse" />}
               {step === 'Registering...' && <Shield className="w-8 h-8 animate-spin" />}
             </div>
-            <DialogTitle className="text-xl">{step}</DialogTitle>
-            <DialogDescription className="max-w-[280px]">
-              {step === 'Generating keys...' && "Creating your cryptographic stealth identity locally..."}
-              {step === 'Encrypting keys...' && "Please sign the message to secure your keys in your browser."}
-              {step === 'Waiting for wallet...' && "Approve the registration transaction in your wallet."}
-              {step === 'Registering...' && "Confirming your transaction on the blockchain..."}
+            <DialogTitle className="text-xl font-black uppercase tracking-tighter italic">{step}</DialogTitle>
+            <DialogDescription className="text-xs uppercase tracking-widest font-medium opacity-60">
+              {step === 'Generating keys...' && "Creating cryptographic stealth identity..."}
+              {step === 'Encrypting keys...' && "Secure local storage in progress..."}
+              {step === 'Waiting for wallet...' && "Awaiting on-chain permission..."}
+              {step === 'Registering...' && "Anchoring handle to protocol..."}
             </DialogDescription>
           </DialogHeader>
-          <div className="flex flex-col items-center justify-center py-4">
-            <div className="w-full bg-muted rounded-full h-1.5 overflow-hidden">
+          <div className="flex flex-col items-center justify-center py-6">
+            <div className="w-full bg-muted rounded-none h-1 overflow-hidden">
               <div className="bg-primary h-full animate-progress-fast" style={{ width: '100%' }} />
             </div>
           </div>

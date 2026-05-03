@@ -5,11 +5,10 @@ import { useSendTransaction } from 'wagmi'
 import { parseEther, bytesToHex } from 'viem'
 import { resolveToStealthData } from '@/lib/ens'
 import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card'
 import { Label } from '@/components/ui/label'
-import { Loader2, Search, ArrowRight, RefreshCw, CheckCircle2, Copy, Shield, ExternalLink, Zap } from 'lucide-react'
+import { Loader2, Search, ArrowRight, RefreshCw, CheckCircle2, Copy, Shield, Zap, TrendingUp, User } from 'lucide-react'
 import { toast } from 'sonner'
+import { cn } from '@/lib/utils'
 
 export function SendForm() {
   const [name, setName] = useState('')
@@ -96,119 +95,134 @@ export function SendForm() {
   }
 
   return (
-    <Card className="w-full max-w-md mx-auto shadow-xl border-border bg-card/50 backdrop-blur-sm overflow-hidden">
-      <div className="h-1 bg-gradient-to-r from-primary/50 via-primary to-primary/50" />
-      <CardHeader>
-        <CardTitle className="text-2xl font-bold tracking-tight">Send privately</CardTitle>
-        <CardDescription>Resolve an ENS name and pay to a unique stealth address.</CardDescription>
-      </CardHeader>
-      <CardContent className="space-y-6">
-        
-        <div className="space-y-2">
-          <Label htmlFor="pay-name" className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Recipient ENS</Label>
-          <div className="flex gap-2">
-            <Input
-              id="pay-name"
-              placeholder="alice.zyn.eth"
-              value={name}
-              onChange={(e) => setName(e.target.value.toLowerCase())}
-              className="h-12 bg-background/50"
-              disabled={isResolving || step !== ''}
-              onKeyDown={(e) => e.key === 'Enter' && handleResolve()}
-            />
-            <Button 
-              size="icon" 
-              className="h-12 w-12 shrink-0"
-              onClick={handleResolve} 
-              disabled={!name || isResolving || step !== ''}
-            >
-              {isResolving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Search className="w-4 h-4" />}
-            </Button>
-          </div>
+    <div className="w-full space-y-12 animate-in fade-in duration-700">
+      
+      {/* Recipient Input Area */}
+      <div className="space-y-6">
+        <div className="flex items-center gap-3">
+          <div className="w-1 h-4 bg-primary rounded-full" />
+          <Label className="text-[10px] font-black uppercase tracking-[0.4em] text-primary/60">Recipient Identity</Label>
         </div>
+        
+        <div className="flex items-baseline gap-4 border-b-2 border-border/40 focus-within:border-primary transition-all pb-2 max-w-2xl group">
+          <input
+            id="pay-name"
+            placeholder="USER-HANDLE"
+            value={name}
+            onChange={(e) => setName(e.target.value.toLowerCase())}
+            onKeyDown={(e) => e.key === 'Enter' && handleResolve()}
+            className="bg-transparent border-none p-0 focus:ring-0 text-3xl sm:text-4xl font-black uppercase tracking-tighter italic placeholder:opacity-10 w-full outline-none"
+            disabled={isResolving || step !== ''}
+          />
+          <button 
+            onClick={handleResolve}
+            disabled={!name || isResolving || step !== ''}
+            className="text-muted-foreground hover:text-primary transition-colors disabled:opacity-20"
+          >
+            {isResolving ? <Loader2 className="w-6 h-6 animate-spin" /> : <Search className="w-6 h-6" />}
+          </button>
+        </div>
+      </div>
 
-        {stealthAddress && (
-          <div className="space-y-6 animate-in fade-in zoom-in-95 duration-500">
-            <div className="p-4 rounded-lg bg-muted/50 border border-border space-y-3">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-1.5 text-xs font-bold text-success uppercase tracking-wider">
-                  <Shield className="w-3.5 h-3.5" /> Stealth Address Generated
-                </div>
-                <Button variant="ghost" size="sm" onClick={handleResolve} className="h-6 px-2 text-[10px] uppercase font-bold" disabled={step !== ''}>
-                  <RefreshCw className="w-3 h-3 mr-1" /> Regenerate
-                </Button>
+      {/* Dynamic Resolution & Amount Area */}
+      {stealthAddress && (
+        <div className="space-y-10 animate-in fade-in slide-in-from-left-4 duration-500">
+          
+          {/* Status Block */}
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-6 bg-muted/20 border border-border/40 rounded-none">
+            <div className="flex items-center gap-4">
+              <div className="w-10 h-10 rounded-full bg-success/10 flex items-center justify-center text-success border border-success/20">
+                <Shield className="w-5 h-5" />
               </div>
-              <div className="flex items-center gap-2 bg-background/50 p-2.5 rounded border border-border/50">
-                <code className="text-[13px] font-mono flex-1 truncate text-foreground/80">
+              <div className="space-y-0.5">
+                <p className="text-[10px] font-black uppercase tracking-[0.2em] text-success/70">Stealth Resolved</p>
+                <code className="text-xs font-mono font-bold tracking-tight text-muted-foreground uppercase truncate block max-w-[200px] sm:max-w-xs italic">
                   {stealthAddress}
                 </code>
-                <Button variant="ghost" size="icon" className="h-7 w-7" onClick={copyAddress}>
-                  {isCopied ? <CheckCircle2 className="w-3.5 h-3.5 text-success" /> : <Copy className="w-3.5 h-3.5" />}
-                </Button>
               </div>
             </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="amount" className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Amount (ETH)</Label>
-              <div className="relative">
-                <Input
-                  id="amount"
-                  type="number"
-                  min="0"
-                  step="0.001"
-                  value={amount}
-                  onChange={(e) => setAmount(e.target.value)}
-                  className="h-12 pl-4 pr-12 text-lg font-semibold bg-background/50"
-                  disabled={step !== ''}
-                />
-                <span className="absolute right-4 top-1/2 -translate-y-1/2 text-muted-foreground font-bold text-sm">ETH</span>
-              </div>
+            <div className="flex items-center gap-2">
+              <Button variant="ghost" size="sm" onClick={copyAddress} className="h-9 px-4 text-[10px] uppercase font-black tracking-widest border border-border/40 rounded-none">
+                {isCopied ? "Copied" : "Copy Hash"}
+              </Button>
+              <Button variant="ghost" size="sm" onClick={handleResolve} className="h-9 w-9 p-0 border border-border/40 rounded-none" disabled={step !== ''}>
+                <RefreshCw className="w-4 h-4" />
+              </Button>
             </div>
+          </div>
 
+          {/* Amount Area */}
+          <div className="space-y-6">
+            <div className="flex items-center gap-3">
+              <div className="w-1 h-4 bg-primary rounded-full" />
+              <Label className="text-[10px] font-black uppercase tracking-[0.4em] text-primary/60">Transfer Value</Label>
+            </div>
+            
+            <div className="flex items-baseline gap-4 border-b-2 border-border/40 focus-within:border-primary transition-all pb-2 max-w-[300px] group">
+              <input
+                id="amount"
+                type="number"
+                min="0"
+                step="0.001"
+                value={amount}
+                onChange={(e) => setAmount(e.target.value)}
+                className="bg-transparent border-none p-0 focus:ring-0 text-5xl font-black tracking-tighter italic placeholder:opacity-10 w-full outline-none"
+                disabled={step !== ''}
+              />
+              <span className="text-2xl font-black italic uppercase text-muted-foreground/30 group-focus-within:text-primary transition-colors">
+                ETH
+              </span>
+            </div>
+          </div>
+
+          {/* Execution Action */}
+          <div className="pt-6">
             {step === 'Done' ? (
-              <div className="p-6 rounded-lg bg-success/10 border border-success/20 text-center space-y-4">
-                <div className="w-12 h-12 rounded-full bg-success/20 flex items-center justify-center mx-auto text-success">
-                  <CheckCircle2 className="w-6 h-6" />
+              <div className="flex items-center gap-6 p-8 border-2 border-success/30 bg-success/[0.02] animate-in zoom-in-95 duration-500">
+                <div className="w-14 h-14 rounded-full bg-success/20 flex items-center justify-center text-success shrink-0">
+                  <CheckCircle2 className="w-8 h-8" />
                 </div>
-                <div>
-                  <h4 className="font-bold text-success">Payment Sent!</h4>
-                  <p className="text-xs text-muted-foreground mt-1">Funds are now private on-chain.</p>
+                <div className="space-y-1">
+                  <h4 className="text-xl font-black uppercase italic tracking-tight text-success">Transaction Settled</h4>
+                  <p className="text-xs font-bold text-muted-foreground uppercase tracking-widest">Protocol announcement broadcasted successfully.</p>
+                  <Button variant="link" className="p-0 h-auto text-xs font-black uppercase tracking-widest text-primary mt-2" onClick={() => {
+                    setStealthAddress(null)
+                    setStep('')
+                    setName('')
+                  }}>
+                    Execute New Transfer <ArrowRight className="w-3 h-3 ml-2" />
+                  </Button>
                 </div>
-                <Button variant="outline" size="sm" className="w-full h-10 font-bold" onClick={() => {
-                  setStealthAddress(null)
-                  setStep('')
-                  setName('')
-                }}>
-                  Send Another
-                </Button>
               </div>
             ) : (
-              <Button 
-                className="w-full font-bold h-12 text-lg transition-all active:scale-[0.98]" 
-                size="lg" 
-                onClick={handleSend}
-                disabled={!amount || step !== ''}
-              >
-                {step !== '' ? (
-                  <>
-                    <Loader2 className="mr-2 h-5 w-5 animate-spin" />
-                    {step}
-                  </>
-                ) : (
-                  <>
-                    Send Payment <ArrowRight className="ml-2 w-5 h-5" />
-                  </>
-                )}
-              </Button>
+              <div className="space-y-4">
+                <Button 
+                  className="group h-16 px-12 font-black uppercase tracking-[0.3em] text-xs bg-foreground text-background hover:bg-primary hover:text-primary-foreground transition-all rounded-none overflow-hidden relative" 
+                  onClick={handleSend}
+                  disabled={!amount || step !== ''}
+                >
+                  <span className="relative z-10 flex items-center gap-3">
+                    {step !== '' ? (
+                      <>
+                        <Loader2 className="w-4 h-4 animate-spin" />
+                        {step}
+                      </>
+                    ) : (
+                      <>
+                        Initiate Private Transfer
+                        <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-2" />
+                      </>
+                    )}
+                  </span>
+                </Button>
+                <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/40">
+                  <Zap className="w-3 h-3" /> EIP-5564 Cryptography Active
+                </div>
+              </div>
             )}
           </div>
-        )}
-      </CardContent>
-      <CardFooter className="bg-muted/30 border-t py-3 justify-center">
-        <p className="text-[10px] text-muted-foreground flex items-center gap-1">
-          <Zap className="w-3 h-3" /> Powered by EIP-5564 & Zero-Link Architecture
-        </p>
-      </CardFooter>
-    </Card>
+        </div>
+      )}
+    </div>
   )
 }
