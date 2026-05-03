@@ -1,7 +1,7 @@
 'use client'
 
 import { WalletConnect } from "./WalletConnect";
-import { Shield } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 import { useAccount } from "wagmi";
 import { Button } from "./ui/button";
@@ -10,34 +10,46 @@ export function MarketingNavbar() {
   const { isConnected } = useAccount();
 
   return (
-    <nav className="border-b bg-card/50 backdrop-blur-md sticky top-0 z-50">
-      <div className="container mx-auto px-6 h-20 flex items-center justify-between">
-        <Link href="/" className="text-2xl font-black tracking-tighter flex items-center gap-2">
-          <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center text-primary-foreground shadow-lg shadow-primary/20">
-            <Shield className="w-6 h-6" />
+    <nav className="bg-transparent absolute top-0 left-0 w-full z-[60]">
+      <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
+        <Link href="/" className="flex items-center gap-6 group">
+          <div className="relative w-10 h-10 overflow-hidden brightness-110">
+            <Image 
+              src="/logo.png" 
+              alt="Zyn Logo" 
+              fill 
+              className="object-contain group-hover:scale-110 transition-transform duration-700 invert" 
+            />
           </div>
-          Zyn Protocol
+          <span className="text-xl font-black uppercase italic tracking-tighter leading-none pt-1">Zyn Protocol</span>
         </Link>
         
-        <div className="hidden md:flex items-center gap-10">
-          <Link href="/#features" className="text-sm font-bold text-muted-foreground hover:text-primary transition-colors">
-            Features
-          </Link>
-          <Link href="/pay" className="text-sm font-bold text-muted-foreground hover:text-primary transition-colors">
-            Send Payment
-          </Link>
-          <Link href="/dashboard" className="text-sm font-bold text-muted-foreground hover:text-primary transition-colors">
-            Dashboard
-          </Link>
+        <div className="hidden md:flex items-center gap-12">
+          {[
+            { name: "Infrastructure", href: "/#features" },
+            { name: "Terminal", href: "/dashboard" },
+            { name: "Docs", href: "#" }
+          ].map((item) => (
+            <Link 
+              key={item.name}
+              href={item.href} 
+              className="text-[10px] font-black uppercase tracking-[0.5em] text-muted-foreground/40 hover:text-primary transition-all relative group py-2"
+            >
+              {item.name}
+              <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-primary transition-all duration-500 group-hover:w-full" />
+            </Link>
+          ))}
         </div>
 
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-6">
           {isConnected ? (
-            <Button className="font-bold rounded-xl px-6" asChild>
-              <Link href="/dashboard">Launch App</Link>
+            <Button className="font-black uppercase tracking-[0.4em] text-[10px] rounded-none px-12 h-12 shadow-2xl shadow-primary/20 bg-foreground text-background hover:bg-primary transition-all" asChild>
+              <Link href="/dashboard">Access Vault</Link>
             </Button>
           ) : (
-            <WalletConnect />
+            <div className="scale-90 origin-right saturate-0 hover:saturate-100 transition-all">
+              <WalletConnect />
+            </div>
           )}
         </div>
       </div>

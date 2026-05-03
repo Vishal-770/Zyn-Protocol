@@ -47,6 +47,52 @@ The contract emits an event with the name and meta-address.
 
 ---
 
+## 💸 The Zyn Payment Lifecycle (Technical Deep-Dive)
+
+This section outlines the exact path a payment takes through the protocol, from discovery to withdrawal.
+
+### 1. Setup (The Recipient)
+*   **Key Generation**: Recipient generates a **Stealth Meta-Address** locally via a signature-derived entropy source.
+    *   *Ref:* [`main-app/lib/keys.ts`](file:///d:/Web3/zyn/main-app/lib/keys.ts) -> `generateStealthKeypairs`
+    *   **Why:** Privacy begins with local entropy. By generating these keys from a signature, we ensure the server never sees the private "master" keys.
+*   **Zero-Link Registration**: Recipient registers a name (e.g., `alice.zyn.eth`) where the **Registrar Contract** is the owner.
+    *   *Ref:* [`hardhat/contracts/SubdomainRegistrar.sol`](file:///d:/Web3/zyn/hardhat/contracts/SubdomainRegistrar.sol) -> `register`
+    *   **Why:** If the user were the owner, their wallet would be permanently linked to the name. Making the contract the owner breaks the on-chain trail.
+*   **Standard Storage**: The meta-address is stored in the **Official ENS Public Resolver**.
+    *   *Ref:* [`hardhat/contracts/SubdomainRegistrar.sol`](file:///d:/Web3/zyn/hardhat/contracts/SubdomainRegistrar.sol) -> `officialResolver.setText`
+    *   **Why:** This ensures data is permanent and follows ENS standards, making it compatible with any wallet that knows how to read ENS text records.
+
+### 2. Discovery & Math (The Sender)
+*   **Resolution**: Sender fetches the Meta-Address record using Alice's ENS name.
+    *   *Ref:* [`main-app/lib/ens.ts`](file:///d:/Web3/zyn/main-app/lib/ens.ts) -> `getStealthMetaAddress`
+    *   **Why:** The sender needs the recipient's public keys to "blind" the payment address.
+*   **Stealth Generation**: Sender's browser computes a one-time **Stealth Address** and an **Ephemeral Public Key** (clue).
+    *   *Ref:* [`main-app/lib/stealth.ts`](file:///d:/Web3/zyn/main-app/lib/stealth.ts) -> `generateStealthAddress`
+    *   **Why:** The stealth address (0xABC...) is unique and has no history. This prevents "address reuse" and makes it impossible for observers to know who the recipient is.
+
+### 3. Execution & Privacy (The Handshake)
+*   **Direct Transfer**: Sender sends ETH directly to the generated Stealth Address.
+    *   **Why:** The money sits on a fresh address that only the recipient can unlock.
+*   **Relayed Announcement**: Sender sends the ephemeral key to the **Zyn Relayer** to be posted on-chain.
+    *   *Ref:* [`main-app/app/api/relay-announce/route.ts`](file:///d:/Web3/zyn/main-app/app/api/relay-announce/route.ts)
+    *   **Why:** If the sender posted the clue directly, their wallet would be linked to the payment. The relayer acts as an anonymity bridge for the notification.
+*   **Stateless Event**: The contract emits an `Announcement` event. No data is stored in contract state.
+    *   *Ref:* [`hardhat/contracts/EphemeralAnnouncer.sol`](file:///d:/Web3/zyn/hardhat/contracts/EphemeralAnnouncer.sol) -> `announce`
+    *   **Why:** Events are significantly cheaper than storage. This keeps the cost of private payments nearly identical to public ones.
+
+### 4. Discovery & Sweep (The Recipient)
+*   **Instant Indexing**: The Graph Subgraph picks up the event and indexes the `viewTag` for fast retrieval.
+    *   *Ref:* [`indexer/src/ephemeral-announcer.ts`](file:///d:/Web3/zyn/indexer/src/ephemeral-announcer.ts)
+    *   **Why:** Scanning the whole blockchain is slow. The indexer provides a fast, filtered API for the dashboard.
+*   **Private Scanning**: Recipient's browser queries the Indexer and uses the **Private Viewing Key** to "unlock" the math and find their funds.
+    *   *Ref:* [`main-app/components/SweepDashboard.tsx`](file:///d:/Web3/zyn/main-app/components/SweepDashboard.tsx) -> `checkStealthAddress`
+    *   **Why:** The indexer doesn't know who is querying. Only the recipient's local browser can verify if a payment belongs to them.
+*   **Recovery**: Recipient derives the one-time **Spending Private Key** and sweeps the funds.
+    *   *Ref:* [`main-app/components/SweepDashboard.tsx`](file:///d:/Web3/zyn/main-app/components/SweepDashboard.tsx) -> `onSweep`
+    *   **Why:** The recipient combines their base spending key with the sender's clue to "derive" the final private key for the one-time address.
+
+---
+
 ## 🛠️ Tech Stack
 
 - **Frontend**: Next.js 16 (Turbopack), TailwindCSS, Shadcn/UI.
@@ -115,6 +161,9 @@ The deployment script automatically generates these, but ensure they are set:
 To make the system functional on Sepolia:
 1.  **Add Controller**: You MUST add the `SubdomainRegistrar` contract address as a **Controller/Manager** for `zyn.eth` in the [ENS Manager](https://app.ens.domains/).
 2.  **Set Resolver**: Ensure `zyn.eth` is using the Official Public Resolver (not the StealthResolver itself). The system handles the rest.
+
+---
+
 
 ---
 
